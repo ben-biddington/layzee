@@ -1,8 +1,9 @@
 (ns layzee.integration.twitter-examples
   (:use midje.sweet)
   (:require [clojure.test :refer :all]
-            [layzee.core :refer :all]))
+            [layzee.adapters.twitter :refer :all :as twitter]))
 
 (facts
  (fact "Can read the timeline"
-       (+ 1 1) => 2))
+       (let [result (twitter/lazy-web)]
+         (< 0 (count result)) => true)))
