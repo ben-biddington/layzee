@@ -1,6 +1,7 @@
 (ns layzee.adapters.twitter
   (:require [clj-http.client :as http]
-            [clj-http.util :as util]))
+            [clj-http.util :as util]
+            [clojure.data.json :as json]))
 
 ;; https://dev.twitter.com/oauth/application-only
 ;; https://github.com/dakrone/clj-http
@@ -9,7 +10,7 @@
 (defn- %[what] (util/url-encode what))
 (defn- %64[what] (util/base64-encode (util/utf8-bytes what)))
 
-(defn sign[consumer-token]
+(defn- sign[consumer-token]
   (let [{key :key secret :secret} consumer-token]
     (%64 (str (% key) ":" (% secret))))) ;; -> https://dev.twitter.com/oauth/application-only
 
@@ -18,23 +19,26 @@
    "Authorization" (str "Basic " (sign consumer-token))
    "Content-type" "application/x-www-form-urlencoded;charset=UTF-8"})
 
-(defn- bearer-token[consumer-token]
+(defn- bearer-auth[token]
+  {
+   "Authorization" (str "Bearer " token)
+   "Accept" "application/json"})
+
+(defn- bearer-token-for[consumer-token]
   (println (headers consumer-token))
   (let [reply (http/post
                "https://api.twitter.com/oauth2/token"
                {
                 :headers (headers consumer-token)
                 :body "grant_type=client_credentials"})]
-    (println reply)
-    ))
+    (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
-(defn- env[name] (or (System/getenv name) "UNKNOWN")) 
+(defn- search[bearer-token what & opts]
+  (let [reply (http/get
+               "https://api.twitter.com//1.1/statuses/user_timeline.json?count=100&screen_name=twitterapi"
+               {:headers (bearer-auth bearer-token)})]
+    (json/read-str (:body reply) :key-fn keyword)))
 
-(defn lazy-web []
-  (println (str "KEY:" (env "TWITTER_CONSUMER_KEY")))
-  (println (str "SECRET:" (env "TWITTER_CONSUMER_SECRET")))
-  
-  (println (bearer-token {:key (env "TWITTER_CONSUMER_KEY") :secret (env "TWITTER_CONSUMER_SECRET")}))
-  ;;(let [reply ()]
-  ;;  (println reply))
-  [0])
+(defn lazy-web [consumer-token]
+  (let [token (bearer-token-for consumer-token)]
+    (search token "lazyweb")))
