@@ -1,7 +1,7 @@
 (ns layzee.core
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.test :refer :all]
+            [layzee.adapters.twitter :refer :all :as twitter]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
+(defn -main [& args]
   (println "Hello, World!"))
