@@ -10,9 +10,8 @@
 (defn- view[t]
   (format "[%s] %s -- %s" (:created_at t) (-> t :text clean) (-> t :user :name)))
 
-
 (defn -main [& args]
-  (let [result (twitter/lazy-web settings/consumer-token)]
+  (let [result (twitter/lazy-web settings/consumer-token {:count 50})]
     (println (format "Searched for <#lazyweb> and found <%s> results" (count result)))
 
     (doseq [tweet result]

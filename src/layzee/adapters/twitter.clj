@@ -32,12 +32,13 @@
                 :body "grant_type=client_credentials"})]
     (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
-(defn- search[bearer-token what & opts]
-  (let [reply (http/get
-               (str "https://api.twitter.com/1.1/search/tweets.json?q=" (% what))
-               {:headers (bearer-auth bearer-token)})]
-    (:statuses (json/read-str (:body reply) :key-fn keyword))))
+(defn- search[bearer-token what opts]
+  (let [count (or (:count opts) 15)]
+    (let [reply (http/get
+                 (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s" count (% what))
+                 {:headers (bearer-auth bearer-token)})]
+      (:statuses (json/read-str (:body reply) :key-fn keyword)))))
 
-(defn lazy-web [consumer-token]
+(defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
-    (search token "lazyweb")))
+    (search token "lazyweb" (first opts))))
