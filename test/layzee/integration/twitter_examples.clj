@@ -12,7 +12,7 @@
        (let [result (twitter/lazy-web consumer-token)]
          (< 0 (count result)) => true)))
 
-;;(facts
-;; (fact "Each tweet contains the tag #lazyweb"
-;;       (let [result (first (twitter/lazy-web))]
-;;         (.contains "lazyweb" (:tags result)) => true)))
+(facts
+ (fact "Each tweet contains the tag #lazyweb"
+       (let [result (first (twitter/lazy-web consumer-token))]
+         (.contains (:text result) "#lazyweb") => true)))

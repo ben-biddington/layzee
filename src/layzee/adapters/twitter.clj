@@ -25,7 +25,6 @@
    "Accept" "application/json"})
 
 (defn- bearer-token-for[consumer-token]
-  (println (headers consumer-token))
   (let [reply (http/post
                "https://api.twitter.com/oauth2/token"
                {
@@ -35,9 +34,9 @@
 
 (defn- search[bearer-token what & opts]
   (let [reply (http/get
-               "https://api.twitter.com//1.1/statuses/user_timeline.json?count=100&screen_name=twitterapi"
+               (str "https://api.twitter.com/1.1/search/tweets.json?q=" (% what))
                {:headers (bearer-auth bearer-token)})]
-    (json/read-str (:body reply) :key-fn keyword)))
+    (:statuses (json/read-str (:body reply) :key-fn keyword))))
 
 (defn lazy-web [consumer-token]
   (let [token (bearer-token-for consumer-token)]
