@@ -22,7 +22,7 @@
 (defn- bearer-auth[token]
   {
    "Authorization" (str "Bearer " token)
-   "Accept" "application/json"})
+   "Accept"        "application/json"})
 
 (defn- bearer-token-for[consumer-token]
   (let [reply (http/post
@@ -33,11 +33,11 @@
     (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
 (defn- search[bearer-token what opts]
-  (let [count (or (:count opts) 15)]
+  (let [count (or (:count opts) 15) tweet-filter (or (:filter opts) #(%1))]
     (let [reply (http/get
                  (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s" count (% what))
                  {:headers (bearer-auth bearer-token)})]
-      (:statuses (json/read-str (:body reply) :key-fn keyword)))))
+      (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword))))))
 
 (defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
