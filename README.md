@@ -11,7 +11,7 @@
 First install [leiningen](http://leiningen.org/).
 
 ```
-lein deps
+$ lein deps
 ```
 
 # Example
@@ -25,7 +25,7 @@ $ export TWITTER_CONSUMER_KEY=xxx; export TWITTER_CONSUMER_SECRET=xxx
 ```
 
 ```
-lein run
+$ lein run
 Searched for <100> <#lazyweb> mentions and found <13> results (filtered)
 [Tue Aug 18 00:57:11 +0000 2015] Can anyone recommend a pair of wrap around headphones? I’ve been using a pair of these for 5+ years now #lazyweb http://t.co/38CEf1oBJJ -- Sir Tait of Brown
 [Tue Aug 18 00:40:25 +0000 2015] #lazyweb -- Travis Berry
