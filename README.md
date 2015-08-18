@@ -14,6 +14,14 @@ lein deps
 
 # Example
 
+You'll need a twitter application so you can connect using [application only authentication](https://dev.twitter.com/oauth/application-only).
+
+And then set two environment variables:
+
+```
+$ export TWITTER_CONSUMER_KEY=xxx; export TWITTER_CONSUMER_SECRET=xxx
+```
+
 ```
 lein run
 Searched for <100> <#lazyweb> mentions and found <13> results (filtered)
