@@ -48,4 +48,4 @@
 
 (defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
-    (search token "lazyweb" log (if (nil? opts) {} (first opts)))))
+    (search token "#lazyweb" log (if (nil? opts) {} (first opts)))))
