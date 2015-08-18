@@ -33,7 +33,7 @@
     (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
 (defn- search[bearer-token what opts]
-  (let [count (or (:count opts) 15) tweet-filter (or (:filter opts) #(%1))]
+  (let [count (or (:count opts) 15) tweet-filter (or (:filter opts) (fn[what] what))]
     (let [reply (http/get
                  (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s" count (% what))
                  {:headers (bearer-auth bearer-token)})]
@@ -41,4 +41,4 @@
 
 (defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
-    (search token "lazyweb" (first opts))))
+    (search token "lazyweb" (if (nil? opts) {} (first opts)))))

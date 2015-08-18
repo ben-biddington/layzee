@@ -5,7 +5,7 @@
             [layzee.adapters.settings :refer :all :as settings]))
 
 (facts
- (fact "Can read the timeline (and the oage size is 15)"
+ (fact "Can read the timeline (and the page size is 15)"
        (let [result (twitter/lazy-web settings/consumer-token)]
          (count result) => 15)))
 (facts
