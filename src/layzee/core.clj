@@ -11,7 +11,7 @@
   (format "[%s] %s -- %s" (:created_at t) (-> t :text clean) (-> t :user :name)))
 
 (def no-retweets
-     #(= nil (:retweeted_status %1)))
+     #(nil? (:retweeted_status %1)))
 
 (defn -main [& args]
   (let [how-many 100]
