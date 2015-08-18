@@ -8,6 +8,8 @@
 
 # Installation
 
+First install [leiningen](http://leiningen.org/).
+
 ```
 lein deps
 ```
