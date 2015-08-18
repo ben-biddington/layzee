@@ -18,7 +18,7 @@ lein deps
 
 You'll need a twitter application so you can connect using [application only authentication](https://dev.twitter.com/oauth/application-only).
 
-And then set two environment variables:
+And then set two environment variables taken from your [Keys and Access Tokens screen](https://apps.twitter.com/app/8673064/keys):
 
 ```
 $ export TWITTER_CONSUMER_KEY=xxx; export TWITTER_CONSUMER_SECRET=xxx
