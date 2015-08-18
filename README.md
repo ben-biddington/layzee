@@ -41,3 +41,9 @@ Searched for <100> <#lazyweb> mentions and found <13> results (filtered)
 [Mon Aug 17 18:52:48 +0000 2015] Freakin' love Amazon. Just ordered new RAM for my iMac. Being delivered TODAY. For FREE. #lazyweb -- Cory Watilo
 [Mon Aug 17 18:51:07 +0000 2015] Dear #lazyWeb, which class in Symfony does form data (string) gets converted into their corresponding data types for proper Type validation? -- Guilherme Blanco
 ```
+
+For extra logging:
+
+```
+$ LOG=1 lein run
+```
