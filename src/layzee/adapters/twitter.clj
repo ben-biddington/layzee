@@ -1,7 +1,8 @@
 (ns layzee.adapters.twitter
   (:require [clj-http.client :as http]
             [clj-http.util :as util]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [layzee.adapters.settings :as settings]))
 
 ;; https://dev.twitter.com/oauth/application-only
 ;; https://github.com/dakrone/clj-http
@@ -32,13 +33,19 @@
                 :body "grant_type=client_credentials"})]
     (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
-(defn- search[bearer-token what opts]
-  (let [count (or (:count opts) 15) tweet-filter (or (:filter opts) (fn[what] what))]
-    (let [reply (http/get
-                 (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s" count (% what))
-                 {:headers (bearer-auth bearer-token)})]
-      (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword))))))
+(defn- search[bearer-token what log opts]
+  (log opts)
+  (let [how-many (or (:count opts) 15) tweet-filter (or (:filter opts) (fn[what] what))]
+    (let [url (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s" how-many (% what))]
+      (log url)
+      (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
+        (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
+
+(def log ^{:private true}
+     (fn[msg & args]
+       (when settings/log?
+         (println (str "[log] " (apply format (str msg) args))))))
 
 (defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
-    (search token "lazyweb" (if (nil? opts) {} (first opts)))))
+    (search token "lazyweb" log (if (nil? opts) {} (first opts)))))
