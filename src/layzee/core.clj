@@ -8,12 +8,15 @@
 (defn- clean[text]
   (.replace text "\n" ""))
 
+(defn- layout[t]
+  (clojure.pprint/cl-format nil "~65A" t))
+
 (defn- earl[t]
   ;; https://twitter.com/marick/status/633460947193978880
-  (format "https://twitter.com/%s/status/%s" (util/url-encode (-> t :user :name)) (-> t :id)))
+  (layout (format "https://twitter.com/%s/status/%s" (util/url-encode (-> t :user :id_str)) (-> t :id))))
 
 (defn- view[t]
-  (format "[%s] %s -- %s %s" (earl t) (:created_at t) (-> t :text clean) (-> t :user :name)))
+  (format "[%s] %s -- %s %s" (:created_at t) (earl t) (-> t :text clean) (-> t :user :name)))
 
 (def no-retweets
      #(nil? (:retweeted_status %1)))
