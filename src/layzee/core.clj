@@ -2,13 +2,18 @@
   (:gen-class)
   (:require [clojure.test :refer :all]
             [layzee.adapters.twitter :refer :all :as twitter]
-            [layzee.adapters.settings :refer :all :as settings]))
+            [layzee.adapters.settings :refer :all :as settings]
+            [clj-http.util :as util]))
 
 (defn- clean[text]
   (.replace text "\n" ""))
 
+(defn- earl[t]
+  ;; https://twitter.com/marick/status/633460947193978880
+  (format "https://twitter.com/%s/status/%s" (util/url-encode (-> t :user :name)) (-> t :id)))
+
 (defn- view[t]
-  (format "[%s] %s -- %s" (:created_at t) (-> t :text clean) (-> t :user :name)))
+  (format "[%s] %s -- %s %s" (earl t) (:created_at t) (-> t :text clean) (-> t :user :name)))
 
 (def no-retweets
      #(nil? (:retweeted_status %1)))
