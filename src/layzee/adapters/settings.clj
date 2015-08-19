@@ -8,7 +8,7 @@
 
 (defn- env?[name] (not (nil? (System/getenv name))))
 
-(def settings-file-name ".twitter")
+(def ^{:private true} settings-file-name ".twitter")
 (defn exists? [] (.exists (io/as-file settings-file-name)))
 
 (defn- from-disk []
