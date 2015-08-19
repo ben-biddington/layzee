@@ -49,3 +49,12 @@
 (defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
     (search token "#lazyweb" log (if (nil? opts) {} (first opts)))))
+
+(defn- replies-for [bearer-token id]
+  (let [url (format "https://api.twitter.com/1.1/conversation/show.json?id=%s" id)]
+      (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
+        (:statuses (json/read-str (:body reply) :key-fn keyword)))))
+
+(defn replies [consumer-token tweet-id & opts]
+  (let [token (bearer-token-for consumer-token)]
+    (replies-for token tweet-id)))
