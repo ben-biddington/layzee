@@ -13,10 +13,9 @@
 
 (defn- from-disk []
   (when (exists?)
-    (let [f (slurp settings-file-name)]
-      (json/read-str f :key-fn keyword))))
+    (json/read-str (slurp settings-file-name) :key-fn keyword)))
 
-(defn- env[name] (or (System/getenv name) )) ;; 
+(defn- env[name] (System/getenv name))
 
 (defn- from-env[] { :key (env "TWITTER_CONSUMER_KEY")  :secret (env "TWITTER_CONSUMER_SECRET")} )
 
