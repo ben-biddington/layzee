@@ -42,9 +42,9 @@
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
 (def log ^{:private true}
-     (fn[msg & args]
+     (fn [msg & args]
        (when settings/log?
-         (println (str "[log] " (apply format (str msg) args))))))
+         (println (str "[log] " (apply format (.replace (str msg) "%" "%%") args))))))
 
 (defn lazy-web [consumer-token & opts]
   (let [token (bearer-token-for consumer-token)]
