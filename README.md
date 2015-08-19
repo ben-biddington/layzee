@@ -18,14 +18,15 @@ $ lein deps
 
 You'll need a twitter application so you can connect using [application only authentication](https://dev.twitter.com/oauth/application-only).
 
-And then set two environment variables taken from your [Keys and Access Tokens screen](https://apps.twitter.com/app/8673064/keys):
+And then either set two environment variables taken from your [Keys and Access Tokens screen](https://apps.twitter.com/app/8673064/keys):
 
 ```
 $ export TWITTER_CONSUMER_KEY=xxx; export TWITTER_CONSUMER_SECRET=xxx
 ```
 
+Or put them in a file called `.twitter`. See [`.twitter.example`](https://github.com/ben-biddington/layzee/blob/master/.twitter.example) for an example.
+
 ```
-src/layzee/
 
 $ lein run
 Searched for <100> <#lazyweb> mentions and found <81> results (filtered)
