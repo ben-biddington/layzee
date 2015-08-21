@@ -60,3 +60,7 @@ For extra logging:
 $ LOG=1 lein run
 ```
 
+# Twitter auth
+
+[Looks for firehose mode you have to use normal oauth](https://dev.twitter.com/oauth/overview/authentication-by-api-family) rather than application-only bearer tokens (that the search API supports).
+

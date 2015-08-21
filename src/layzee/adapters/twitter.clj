@@ -58,3 +58,11 @@
 (defn replies [consumer-token tweet-id & opts]
   (let [token (bearer-token-for consumer-token)]
     (replies-for token tweet-id)))
+
+(defn- connect[bearer-token]
+  (let [url "https://stream.twitter.com/1.1/statuses/firehose.json"]
+    (http/get url {:headers (bearer-auth bearer-token)})))
+
+(defn stream-connect[consumer-token]
+  (let [token (bearer-token-for consumer-token)]
+    (connect token)))
