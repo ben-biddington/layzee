@@ -14,7 +14,7 @@
        (let [result (first (twitter/lazy-web settings/consumer-token))]
          (.contains (:text result) "#lazyweb") => true)))
 
-(facts
- (fact "Get replies to a tweet like this"
-       (let [result (first (twitter/replies settings/consumer-token "633472387497902080"))]
-         (println result))))
+;(facts
+; (fact "Get replies to a tweet like this"
+;       (let [result (first (twitter/replies settings/consumer-token "633472387497902080"))]
+;         (println result))))
