@@ -5,7 +5,7 @@
             [layzee.adapters.settings :refer :all :as settings]))
 
 (facts
- (fact "Can connect"
+ (fact :wip "Can connect"
        (let [result (twitter/stream-connect settings/consumer-token)]
          (println result))))
 
