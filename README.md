@@ -1,5 +1,7 @@
 # layzee
 
+[![Build Status](https://api.travis-ci.org/ben-biddington/layzee.svg?branch=master)](http://travis-ci.org/ben-biddington/layzee)
+
 - [ ] As a User I can view a list of #lazyweb questions
 
 - [ ] As a User I can select a specific #lazyweb question and see the whole conversation around that tweet (@replies)
