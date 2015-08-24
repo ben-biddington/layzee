@@ -60,9 +60,24 @@
   (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (replies-for token tweet-id)))
 
-(defn- connect[bearer-token]
+(defn param[name,value] (struct signature-base-string/parameter name value))
+
+(defn- oauth-sign[url oauth-credential]
+  (let [parameters {
+    :verb "GET"
+    :url url
+    :parameters (list 
+      (param "oauth_consumer_key"     (:consumer-key oauth-credential))
+      (param "oauth_token"            (:token-key oauth-credential))
+      (param "oauth_timestamp"        "1191242096")
+      (param "oauth_nonce"            "kllo9940pd9333jh")
+      (param "oauth_signature_method" "HMAC-SHA1")
+      (param "oauth_version"          "1.0"))}]
+    (signature-base-string/signature-base-string parameters)))
+
+(defn- connect[oauth-credential]
   (let [url "https://stream.twitter.com/1.1/statuses/firehose.json"]
-    (http/get url {:headers (bearer-auth bearer-token)})))
+    (http/get url {:headers {"Authorization" (oauth-sign url oauth-credential)} })))
 
 (defn stream-connect[oauth-credential]
   (connect oauth-credential))
