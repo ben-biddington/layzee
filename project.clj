@@ -8,7 +8,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [clj-http "2.0.0"]
                  [clj-time "0.11.0"]
-                 [bone "0.1.0-SNAPSHOT"]]
+                 [bone "0.3.0-SNAPSHOT"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]

@@ -62,5 +62,5 @@ $ LOG=1 lein run
 
 # Twitter auth
 
-[Looks for firehose mode you have to use normal oauth](https://dev.twitter.com/oauth/overview/authentication-by-api-family) rather than application-only bearer tokens (that the search API supports).
+[Looks for firehose mode you have to use normal oauth](https://dev.twitter.com/oauth/overview/authentication-by-api-family) rather than application-only bearer tokens (that the search API supports). We are using [bone](https://github.com/ben-biddington/bone) for oauth signing.
 

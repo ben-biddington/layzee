@@ -2,7 +2,9 @@
   (:require [clj-http.client :as http]
             [clj-http.util :as util]
             [clojure.data.json :as json]
-            [layzee.adapters.settings :as settings]))
+            [layzee.adapters.settings :as settings]
+            [bone.signature-base-string :as signature-base-string]
+            [bone.signature :as signature]))
 
 ;; https://dev.twitter.com/oauth/application-only
 ;; https://github.com/dakrone/clj-http
@@ -11,13 +13,12 @@
 (defn- %[what] (util/url-encode what))
 (defn- %64[what] (util/base64-encode (util/utf8-bytes what)))
 
-(defn- sign[consumer-token]
-  (let [{key :key secret :secret} consumer-token]
-    (%64 (str (% key) ":" (% secret))))) ;; -> https://dev.twitter.com/oauth/application-only
+(defn- sign[key secret]
+    (%64 (str (% key) ":" (% secret)))) ;; -> https://dev.twitter.com/oauth/application-only
 
-(defn- headers[consumer-token]
+(defn- headers[consumer-key consumer-secret]
   {
-   "Authorization" (str "Basic " (sign consumer-token))
+   "Authorization" (str "Basic " (sign consumer-key consumer-secret))
    "Content-type" "application/x-www-form-urlencoded;charset=UTF-8"})
 
 (defn- bearer-auth[token]
@@ -25,11 +26,11 @@
    "Authorization" (str "Bearer " token)
    "Accept"        "application/json"})
 
-(defn- bearer-token-for[consumer-token]
+(defn- bearer-token-for[key secret]
   (let [reply (http/post
                "https://api.twitter.com/oauth2/token"
                {
-                :headers (headers consumer-token)
+                :headers (headers key secret)
                 :body "grant_type=client_credentials"})]
     (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
@@ -46,8 +47,8 @@
        (when settings/log?
          (println (str "[log] " (apply format (.replace (str msg) "%" "%%") args))))))
 
-(defn lazy-web [consumer-token & opts]
-  (let [token (bearer-token-for consumer-token)]
+(defn lazy-web [oauth-credential & opts]
+  (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (search token "#lazyweb" log (if (nil? opts) {} (first opts)))))
 
 (defn- replies-for [bearer-token id]
@@ -55,14 +56,13 @@
       (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
         (:statuses (json/read-str (:body reply) :key-fn keyword)))))
 
-(defn replies [consumer-token tweet-id & opts]
-  (let [token (bearer-token-for consumer-token)]
+(defn replies [oauth-credential tweet-id & opts]
+  (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (replies-for token tweet-id)))
 
 (defn- connect[bearer-token]
   (let [url "https://stream.twitter.com/1.1/statuses/firehose.json"]
     (http/get url {:headers (bearer-auth bearer-token)})))
 
-(defn stream-connect[consumer-token]
-  (let [token (bearer-token-for consumer-token)]
-    (connect token)))
+(defn stream-connect[oauth-credential]
+  (connect oauth-credential))

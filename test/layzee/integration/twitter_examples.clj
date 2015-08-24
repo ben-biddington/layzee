@@ -6,12 +6,12 @@
 
 (facts
  (fact "Can read the timeline (and the page size is 15)"
-       (let [result (twitter/lazy-web settings/consumer-token)]
+       (let [result (twitter/lazy-web settings/oauth-credential)]
          (count result) => 15)))
 
 (facts
  (fact "Each tweet contains the tag #lazyweb"
-       (let [result (first (twitter/lazy-web settings/consumer-token))]
+       (let [result (first (twitter/lazy-web settings/oauth-credential))]
          (.contains (:text result) "#lazyweb") => true)))
 
 ;(facts

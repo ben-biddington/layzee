@@ -17,9 +17,9 @@
 
 (defn- env[name] (System/getenv name))
 
-(defn- from-env[] { :key (env "TWITTER_CONSUMER_KEY")  :secret (env "TWITTER_CONSUMER_SECRET")} )
+(defn- from-env[] { :consumer-key (env "TWITTER_CONSUMER_KEY")  :consumer-secret (env "TWITTER_CONSUMER_SECRET")} )
 
-(def consumer-token
+(def oauth-credential
      (or
       (from-disk)
       (from-env)

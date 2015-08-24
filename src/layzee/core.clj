@@ -34,7 +34,7 @@
 
 (defn -main [& args]
   (let [how-many 100]
-    (let [result (twitter/lazy-web settings/consumer-token {:count how-many :filter no-retweets})]
+    (let [result (twitter/lazy-web settings/oauth-credential {:count how-many :filter no-retweets})]
       (println (format "Searched for <%s> <#lazyweb> mentions and found <%s> results (filtered)" how-many (count result)))
 
       (doseq [tweet result]
