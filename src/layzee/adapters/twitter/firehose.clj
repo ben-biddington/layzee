@@ -3,13 +3,9 @@
             [clj-http.util :as util]
             [clojure.data.json :as json]
             [layzee.adapters.settings :as settings]
+            [layzee.adapters.logging :refer :all]
             [bone.signature-base-string :as signature-base-string]
             [bone.signature :as signature]))
-
-(def log ^{:private true}
-     (fn [msg & args]
-       (when settings/log?
-         (println (str "[log] " (apply format (.replace (str msg) "%" "%%") args))))))
 
 (defn param[name,value] (struct signature-base-string/parameter name value))
 

@@ -3,6 +3,7 @@
             [clj-http.util :as util]
             [clojure.data.json :as json]
             [layzee.adapters.settings :as settings]
+            [layzee.adapters.logging :refer :all]
             [bone.signature-base-string :as signature-base-string]
             [bone.signature :as signature]))
 
@@ -42,11 +43,6 @@
       (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
-(def log ^{:private true}
-     (fn [msg & args]
-       (when settings/log?
-         (println (str "[log] " (apply format (.replace (str msg) "%" "%%") args))))))
-
 (defn lazy-web [oauth-credential & opts]
   (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (search token "#lazyweb" log (if (nil? opts) {} (first opts)))))
@@ -59,7 +55,5 @@
 (defn replies [oauth-credential tweet-id & opts]
   (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (replies-for token tweet-id)))
-
-(defn param[name,value] (struct signature-base-string/parameter name value))
 
 
