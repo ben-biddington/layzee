@@ -1,4 +1,4 @@
-(ns layzee.adapters.twitter
+(ns layzee.adapters.twitter.search
   (:require [clj-http.client :as http]
             [clj-http.util :as util]
             [clojure.data.json :as json]

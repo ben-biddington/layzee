@@ -1,7 +1,7 @@
 (ns layzee.core
   (:gen-class)
   (:require [clojure.test :refer :all]
-            [layzee.adapters.twitter :refer :all :as twitter]
+            [layzee.adapters.twitter.search :refer :all :as twitter]
             [layzee.adapters.settings :refer :all :as settings]
             [clj-http.util :as util]
             [clj-time.core :as t]
