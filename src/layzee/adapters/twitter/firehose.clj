@@ -4,23 +4,13 @@
             [clojure.data.json :as json]
             [layzee.adapters.settings :as settings]
             [layzee.adapters.logging :refer :all]
-            [bone.signature-base-string :as signature-base-string]
-            [bone.signature :as signature]))
-
-(defn param[name,value] (struct signature-base-string/parameter name value))
+            [bone.auth-header :as auth :refer :all]
+            [bone.signature :as signature]
+            [bone.timestamps :as ts]))
 
 (defn- oauth-sign[url oauth-credential]
-  (let [parameters {
-    :verb "GET"
-    :url url
-    :parameters (list 
-      (param "oauth_consumer_key"     (:consumer-key oauth-credential))
-      (param "oauth_token"            (:token-key oauth-credential))
-      (param "oauth_timestamp"        "1191242096")
-      (param "oauth_nonce"            "kllo9940pd9333jh")
-      (param "oauth_signature_method" "HMAC-SHA1")
-      (param "oauth_version"          "1.0"))}]
-    (signature/hmac-sha1-sign (signature-base-string/signature-base-string parameters) (str (:consumer-secret oauth-credential) "&" (:token-secret oauth-credential)))))
+  (let [opts {:verb "GET" :url url :parameters {} :timestamp-fn ts/next :nonce-fn ts/next}]
+    (auth/sign oauth-credential opts)))
 
 (defn- connect-core[oauth-credential]
   (let [url "https://stream.twitter.com/1.1/statuses/firehose.json"]
@@ -28,4 +18,4 @@
     (http/get url {:headers {"Authorization" (oauth-sign url oauth-credential)} })))
 
 (defn connect[oauth-credential]
-  (connect oauth-credential))
+  (connect-core oauth-credential))
