@@ -14,8 +14,8 @@
 
 (defn- connect-core[oauth-credential]
   (let [url "https://stream.twitter.com/1.1/statuses/firehose.json"]
-    (log (oauth-sign url oauth-credential))
-    (http/get url {:headers {"Authorization" (oauth-sign url oauth-credential)} })))
+    (log {:headers {"Authorization" (oauth-sign url oauth-credential)} })
+    (http/get url {:headers { "Authorization" (oauth-sign url oauth-credential)} })))
 
 (defn connect[oauth-credential]
   (connect-core oauth-credential))
