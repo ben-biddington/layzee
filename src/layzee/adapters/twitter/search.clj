@@ -11,7 +11,7 @@
 ;; https://github.com/dakrone/clj-http
 ;; https://apps.twitter.com/app/8673064
 
-(defn- %[what] (util/url-encode what))
+(defn- %[what] (util/url-encode (or what "")))
 (defn- %64[what] (util/base64-encode (util/utf8-bytes what)))
 
 (defn- sign[key secret]
