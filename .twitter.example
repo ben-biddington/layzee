@@ -1,1 +1,4 @@
-{ "key" : "YOUR-KEY-HERE" , "secret" : "YOUR-SECRET-HERE" }
+{
+        "consumer-key" : "YOUR-KEY-HERE", "consumer-secret" : "YOUR-SECRET-HERE",
+        "token-key" : "YOUR-KEY-HERE", "token-secret" : "YOUR-SECRET-HERE",
+}
