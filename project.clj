@@ -8,6 +8,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [clj-http "2.0.0"]
                  [clj-time "0.11.0"]
+                 [org.clojure/data.json "0.2.6"]
                  [bone "0.8.0-SNAPSHOT"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
