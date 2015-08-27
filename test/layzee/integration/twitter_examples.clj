@@ -12,7 +12,7 @@
 (facts
  (fact "Each tweet contains the tag #lazyweb"
        (let [result (first (twitter/lazy-web settings/oauth-credential))]
-         (.contains (:text result) "#lazyweb") => true)))
+         (.contains (.toLowerCase (:text result)) "#lazyweb") => true)))
 
 ;(facts
 ; (fact "Get replies to a tweet like this"

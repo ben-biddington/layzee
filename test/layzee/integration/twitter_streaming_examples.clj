@@ -7,7 +7,11 @@
 
 (facts
  (fact :wip "Can connect"
-       (log settings/oauth-credential)
        (let [result (firehose/connect settings/oauth-credential)]
+         (println result))))
+
+(facts
+ (fact "Can query a tweet"
+       (let [result (firehose/get-tweet settings/oauth-credential "636438888567824384")]
          (println result))))
 
