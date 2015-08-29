@@ -11,6 +11,8 @@
 ;; https://github.com/dakrone/clj-http
 ;; https://apps.twitter.com/app/8673064
 
+;; @todo: look up bearer token once (memoize)
+
 (defn- %[what] (util/url-encode (or what "")))
 (defn- %64[what] (util/base64-encode (util/utf8-bytes what)))
 
@@ -41,6 +43,7 @@
     (let [url (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s" how-many (% what))]
       (log url)
       (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
+        (log (:body reply))
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
 (defn lazy-web [oauth-credential & opts]
@@ -56,4 +59,6 @@
   (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (replies-for token tweet-id)))
 
-
+(defn by-keyword[oauth-credential keyword & opts]
+  (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
+    (search token keyword log (if (nil? opts) {} (first opts)))))

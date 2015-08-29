@@ -7,7 +7,7 @@
             [layzee.adapters.logging :refer :all]))
 
 (facts
- (fact "Can find a single tweet bu its id"
+ (fact "Can find a single tweet by its id"
        (let [result (api/get-tweet settings/oauth-credential "636438888567824384")]
          (println (json/write-str result :value-fn #(str %2)))))) ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo
 
