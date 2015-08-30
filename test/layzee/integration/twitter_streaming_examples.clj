@@ -10,10 +10,11 @@
 (facts
  (fact :wip "Can connect"
        (let [result (firehose/connect settings/oauth-credential)]
+         (println result)))
+
+ (fact :wip "Can use the 'sample' endpoint" ;; can use the 'sample' endpoint"
+       (let [result (firehose/sample settings/oauth-credential)]
          (println result))))
 
-(facts
- (fact "Can query a tweet"
-       (let [result (api/get-tweet settings/oauth-credential "636438888567824384")]
-         (println (json/write-str result :value-fn #(str %2)))))) ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo
+ ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo
 

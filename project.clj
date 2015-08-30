@@ -9,7 +9,9 @@
                  [clj-http "2.0.0"]
                  [clj-time "0.11.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [bone "0.8.0-SNAPSHOT"]]
+                 [bone "0.8.0-SNAPSHOT"]
+                 [http.async.client "0.5.2"]
+                 [http-kit "2.1.18"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]
