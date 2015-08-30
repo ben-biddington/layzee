@@ -27,11 +27,11 @@
       (doseq [s (http-async/string resp)]
         (apply callback [s])))))
 
-(defn sample[oauth-credential] ;; https://dev.twitter.com/streaming/reference/get/statuses/sample
-  (let [url "https://stream.twitter.com/1.1/statuses/sample.json"]
+(defn sample[oauth-credential & opts] ;; https://dev.twitter.com/streaming/reference/get/statuses/sample
+  (let [url "https://stream.twitter.com/1.1/statuses/sample.json" callback (or (:callback opts) #(println %))]
     (println "connecting")
     (listen
      url
      { "Authorization" (oauth/sign url {} oauth-credential)}
-     #(println %))))
+     callback)))
   
