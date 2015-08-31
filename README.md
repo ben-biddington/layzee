@@ -16,6 +16,17 @@ First install [leiningen](http://leiningen.org/).
 $ lein deps
 ```
 
+# Example: Realtime
+
+You may now monitor `lazyweb` mentions in real time:
+
+```
+$ lein run realtime
+
+[Mon Aug 31 09:11:24 +0000 2015] -- "#lazyweb"
+
+```
+
 # Example
 
 You'll need a twitter application so you can connect using [application only authentication](https://dev.twitter.com/oauth/application-only).

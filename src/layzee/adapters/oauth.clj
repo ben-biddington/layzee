@@ -6,6 +6,6 @@
             [bone.signature :as signature]
             [bone.timestamps :as ts]))
 
-(defn sign[url parameters oauth-credential]
-  (let [opts {:verb "GET" :url url :parameters parameters :timestamp-fn ts/next :nonce-fn ts/next}]
+(defn sign[url verb parameters oauth-credential]
+  (let [opts {:verb verb :url url :parameters parameters :timestamp-fn ts/next :nonce-fn ts/next}]
     (auth/sign oauth-credential opts)))

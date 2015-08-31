@@ -10,4 +10,4 @@
 
 (defn get-tweet[oauth-credential id]
   (let [url "https://api.twitter.com/1.1/statuses/show.json"]
-    (http/get (format "%s?id=%s" url id) {:headers { "Authorization" (oauth/sign url { "id" id } oauth-credential)} })))
+    (http/get (format "%s?id=%s" url id) {:headers { "Authorization" (oauth/sign url "GET" { "id" id } oauth-credential)} })))

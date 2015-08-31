@@ -1,5 +1,6 @@
 (ns layzee.core
   (:gen-class)
+  (:refer-clojure :exclude[filter])
   (:require 
    [layzee.adapters.twitter.search :refer :all :as twitter]
    [layzee.adapters.twitter.firehose :refer :all :as firehose]
@@ -13,10 +14,13 @@
 
 (def ^{:private true} realtime-search
      (fn [opts]
-       (println opts)
        (firehose/sample settings/oauth-credential opts)))
+
+(def ^{:private true} realtime-filter
+     (fn [opts]
+       (firehose/filter settings/oauth-credential opts)))
 
 (defn -main [& args]
   (if (< 0 (count args))
-    (realtime-sample/run {:realtime-fn realtime-search})
+    (realtime-sample/run {:realtime-fn realtime-filter})
     (lazy-web/run        {:search-adapter-fn lazy-web-search})))

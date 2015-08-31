@@ -1,4 +1,5 @@
 (ns layzee.adapters.twitter.firehose
+  (:refer-clojure :exclude[filter])
   (:require [clj-http.client :as http]
             [clj-http.util :as util]
             [clojure.data.json :as json]
@@ -28,22 +29,36 @@
     
     (when (.contains args "\r\n")
       (do
-        (apply callback [(json/read-str @current)])
+        (let [t @current]
+          (if-not (clojure.string/blank? t)
+                  (apply callback [(json/read-str @current)])))
         (reset! current "")))))
 
-(defn listen[url headers callback]
+(defn- listen[url verb headers body callback]
   "Listens to <url>, invoking <callback> each time a message arrives. 
    See: <http://neotyk.github.io/http.async.client/docs.html#sec-2-4-1>"
   (with-open [client (http-async/create-client)]
-    (let [resp (http-async/stream-seq client :get url :headers headers :timeout never)]
+    (let [resp (http-async/stream-seq client verb url :headers headers :body body :timeout never)]
       (doseq [s (http-async/string resp)]
         (notify callback s)))))
 
 (defn sample[oauth-credential callback] ;; https://dev.twitter.com/streaming/reference/get/statuses/sample
   (let [url "https://stream.twitter.com/1.1/statuses/sample.json"]
-    (println "connecting")
+    (println (format "Listening to <%s>" url))
     (listen
      url
-     { "Authorization" (oauth/sign url {} oauth-credential)}
+     :get
+     { "Authorization" (oauth/sign url "GET" {} oauth-credential)}
+     {}
+     callback)))
+
+(defn filter[oauth-credential callback] ;; https://dev.twitter.com/streaming/reference/post/statuses/filter
+  (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" "lazyweb" }]
+    (println (format "Listening to <%s> with body <%s> (See https://dev.twitter.com/streaming/reference/post/statuses/filter)" url body))
+    (listen
+     url
+     :post
+     { "Authorization" (oauth/sign url "POST" body oauth-credential)}
+     body
      callback)))
   
