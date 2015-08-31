@@ -12,7 +12,9 @@
     (twitter/lazy-web settings/oauth-credential opts)))
 
 (def ^{:private true} realtime-search
-     #(firehose/sample settings/oauth-credential %))
+     (fn [opts]
+       (println opts)
+       (firehose/sample settings/oauth-credential opts)))
 
 (defn -main [& args]
   (if (< 0 (count args))

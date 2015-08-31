@@ -13,7 +13,7 @@
          (println result)))
 
  (fact :wip "Can use the 'sample' endpoint" ;; can use the 'sample' endpoint"
-       (let [result (firehose/sample settings/oauth-credential)]
+       (let [result (firehose/sample settings/oauth-credential (fn[tweet]))]
          (println result))))
 
  ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo

@@ -12,7 +12,7 @@
  (fact "Though searching by tweet id returns nothing" ;; https://twitter.com/benbiddington/status/636787150009184256
        (count (search/by-keyword settings/oauth-credential "636787150009184256")) => 0)
  
- (fact "Searching for somethig=ng common returns some reasults"
+ (fact "Searching for something common returns some reasults"
        (let [result (search/by-keyword settings/oauth-credential "twitter")]
          (empty? result) => false)))
 

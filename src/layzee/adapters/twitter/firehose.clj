@@ -19,16 +19,30 @@
 
 (def ^{:private true} never -1) 
 
+(def ^{:private true} current (atom ""))
+(def ^{:private true} syncRoot (Object.))
+(def ^{:private true} i (atom 0))
+
+(defn- notify[callback args]
+  (swap! i inc)
+  (locking syncRoot
+    (swap! current str args)
+    
+    (when (.contains args "\r\n")
+      (do
+        (apply callback [(json/read-str @current)])
+        (reset! current "")))))
+
 (defn listen[url headers callback]
   "Listens to <url>, invoking <callback> each time a message arrives. 
    See: <http://neotyk.github.io/http.async.client/docs.html#sec-2-4-1>"
   (with-open [client (http-async/create-client)]
     (let [resp (http-async/stream-seq client :get url :headers headers :timeout never)]
       (doseq [s (http-async/string resp)]
-        (apply callback [s])))))
+        (notify callback s)))))
 
-(defn sample[oauth-credential & opts] ;; https://dev.twitter.com/streaming/reference/get/statuses/sample
-  (let [url "https://stream.twitter.com/1.1/statuses/sample.json" callback (or (:callback opts) #(println %))]
+(defn sample[oauth-credential callback] ;; https://dev.twitter.com/streaming/reference/get/statuses/sample
+  (let [url "https://stream.twitter.com/1.1/statuses/sample.json"]
     (println "connecting")
     (listen
      url
