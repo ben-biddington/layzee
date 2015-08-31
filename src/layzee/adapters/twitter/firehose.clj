@@ -21,10 +21,8 @@
 
 (def ^{:private true} current (atom ""))
 (def ^{:private true} syncRoot (Object.))
-(def ^{:private true} i (atom 0))
 
 (defn- notify[callback args]
-  (swap! i inc)
   (locking syncRoot
     (swap! current str args)
     
