@@ -21,10 +21,23 @@ $ lein deps
 You may now monitor `lazyweb` mentions in real time:
 
 ```
-$ lein run realtime
-
-[Mon Aug 31 09:11:24 +0000 2015] -- "#lazyweb"
-
+$ lein run realtime clojure tdd hickey flag johnkey
+Connecting to <https://stream.twitter.com/1.1/statuses/filter.json> with body <{"track" "clojure,tdd,hickey,flag,johnkey"}> (See https://dev.twitter.com/streaming/reference/post/statuses/filter)
+Connected and listenting
+[Mon Aug 31 23:45:04 +0000 2015] -- RT @2TAPU: Comisserations @shawnmoodie I thought your flag was fabulous and captured the essence of this whole flag debate http://t.co/iZLY…
+[Mon Aug 31 23:45:04 +0000 2015] -- Do I remember this ? No... Did I lose my hat and flag? Yes😔 https://t.co/SY3Bjvcazx
+[Mon Aug 31 23:45:04 +0000 2015] -- RT @Hypnoflag: WRONG CHOICE PUNY HUMAN https://t.co/PETqFmMre4
+[Mon Aug 31 23:45:05 +0000 2015] -- RT @lukeappleby: Here are the official images showing the final four flag referendum choices in flight: #nzflag http://t.co/2MOasBbia2
+[Mon Aug 31 23:45:05 +0000 2015] -- New Zealand flag options narrowed down to four | http://t.co/6tSuHh5bAw
+[Mon Aug 31 23:45:08 +0000 2015] -- RT @2TAPU: Comisserations @shawnmoodie I thought your flag was fabulous and captured the essence of this whole flag debate http://t.co/iZLY…
+[Mon Aug 31 23:45:09 +0000 2015] -- @nzhpolitics @nzherald Well, looks like I'm voting to keep the current flag.
+[Mon Aug 31 23:45:10 +0000 2015] -- Бойцы АТО подняли флаг Украины над шахтой в Горловке http://t.co/bz46EngmiJ #Киев #Ukraine #Луганск #ДНР #Новороссия
+[Mon Aug 31 23:45:10 +0000 2015] -- https://t.co/Gc4aBVmTi8 fired a white woman removed do not rent to the colored people" sign  hired white man confederate flag tatoo
+[Mon Aug 31 23:45:11 +0000 2015] -- RT @Maori_Party: He aha ō koutou whakaaro? https://t.co/mZwF1Isgmi
+[Mon Aug 31 23:45:12 +0000 2015] -- One day, you will be proud to worship me. One day. https://t.co/PihNRDCJqp
+[Mon Aug 31 23:45:13 +0000 2015] -- I voted the current flag. Vote and let them know you're not buying! http://t.co/M2PypOYzkM
+[Mon Aug 31 23:45:14 +0000 2015] -- @ibsss22 @YahooNoise I'd go with the guy who had hip replacement surgery. Flag football is no contact so he probably won't re-injure it.
+[Mon Aug 31 23:45:14 +0000 2015] -- @thmslcn @_wild_world Winston wants everyone to spoil their ballot papers by writing CURRENT FLAG
 ```
 
 # Example

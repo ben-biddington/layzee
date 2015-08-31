@@ -77,7 +77,7 @@
   
   ([oauth-credential callback tracks] ;; https://dev.twitter.com/streaming/reference/post/statuses/filter
      "Returns tweets that match one or more of <tracks>."
-     (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" (clojure.string/join "," tracks) }]
+     (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" (clojure.string/join "," (if (empty? tracks) ["lazyweb" "kanye"] tracks)) }]
        (println (format "Connecting to <%s> with body <%s> (See https://dev.twitter.com/streaming/reference/post/statuses/filter)" url body))
        (listen
         url
