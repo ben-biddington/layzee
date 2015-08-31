@@ -23,6 +23,9 @@
 (def ^{:private true} current (atom ""))
 (def ^{:private true} syncRoot (Object.))
 
+(defn- fail[reason & args]
+  ((throw (Exception. (apply format reason args)))))
+
 (defn- notify[callback args]
   (locking syncRoot
     (swap! current str args)
@@ -37,14 +40,29 @@
 (defn- listen[url verb headers body callback]
   "Listens to <url>, invoking <callback> each time a message arrives. 
    See: <http://neotyk.github.io/http.async.client/docs.html#sec-2-4-1>"
-  (with-open [client (http-async/create-client)]
+  
+  (with-open [client (http-async/create-client)] ;; -> http://neotyk.github.io/http.async.client/docs.html
     (let [resp (http-async/stream-seq client verb url :headers headers :body body :timeout never)]
+      (let [err (:error resp)]
+        (if (realized? err)
+          (fail "There was an error <%s>" err)
+          (println "Connected and listenting")))
+
       (doseq [s (http-async/string resp)]
-        (notify callback s)))))
+        (let [status @(:status resp)]
+          (when (not (nil? status))
+            (when (not (= 200 (:code status)))
+              (fail "An error occured, status was <%s, %s>" (:code status) (:msg status)))))
+        
+        (try
+         (notify callback s)
+         (catch Exception e (println (format "ERR: %s" (.getMessage e))))))
+
+      (println "Waiting complete -- check status for errors: " @(:status resp) (http-async/string resp) ))))
 
 (defn sample[oauth-credential callback] ;; https://dev.twitter.com/streaming/reference/get/statuses/sample
   (let [url "https://stream.twitter.com/1.1/statuses/sample.json"]
-    (println (format "Listening to <%s>" url))
+    (println (format "Connecting to <%s>" url))
     (listen
      url
      :get
@@ -53,8 +71,8 @@
      callback)))
 
 (defn filter[oauth-credential callback] ;; https://dev.twitter.com/streaming/reference/post/statuses/filter
-  (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" "lazyweb" }]
-    (println (format "Listening to <%s> with body <%s> (See https://dev.twitter.com/streaming/reference/post/statuses/filter)" url body))
+  (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" "lazyweb,kanye,xero" }]
+    (println (format "Connecting to <%s> with body <%s> (See https://dev.twitter.com/streaming/reference/post/statuses/filter)" url body))
     (listen
      url
      :post
