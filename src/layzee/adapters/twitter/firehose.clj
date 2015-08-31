@@ -73,9 +73,10 @@
 (defn filter
   ([oauth-credential callback]
      (filter oauth-credential callback ["lazyweb" "kanye", "xero"]))
-  
-  ([oauth-credential callback track] ;; https://dev.twitter.com/streaming/reference/post/statuses/filter
-     (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" (clojure.string/join "," track) }]
+
+  "Returns tweets that match one or more of <tracks>."
+  ([oauth-credential callback tracks] ;; https://dev.twitter.com/streaming/reference/post/statuses/filter
+     (let [url "https://stream.twitter.com/1.1/statuses/filter.json" body { "track" (clojure.string/join "," tracks) }]
        (println (format "Connecting to <%s> with body <%s> (See https://dev.twitter.com/streaming/reference/post/statuses/filter)" url body))
        (listen
         url
