@@ -16,11 +16,11 @@
      (fn [opts]
        (firehose/sample settings/oauth-credential opts)))
 
-(def ^{:private true} realtime-filter
-     (fn [opts]
-       (firehose/filter settings/oauth-credential opts)))
+(defn- realtime-filter[args]
+     (fn [callback]
+       (firehose/filter settings/oauth-credential callback args)))
 
 (defn -main [& args]
   (if (< 0 (count args))
-    (realtime-sample/run {:realtime-fn realtime-filter})
-    (lazy-web/run        {:search-adapter-fn lazy-web-search})))
+    (realtime-sample/run { :realtime-fn (realtime-filter (rest args)) })
+    (lazy-web/run        { :search-adapter-fn lazy-web-search })))
