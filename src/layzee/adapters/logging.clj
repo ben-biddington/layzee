@@ -1,7 +1,11 @@
 (ns layzee.adapters.logging
-  (:require [layzee.adapters.settings :as settings]))
+  (:require [layzee.adapters.settings :as settings]
+            [clojure.tools.logging :as l]))
 
 (def log ^{:private true}
      (fn [msg & args]
        (when settings/log?
-         (println (str "[log] " (apply format (.replace (str msg) "%" "%%") args))))))
+         (let [msg (apply format (.replace (str msg) "%" "%%") args)]
+           (do
+             (l/info msg)
+             (println (str "[log] " msg)))))))
