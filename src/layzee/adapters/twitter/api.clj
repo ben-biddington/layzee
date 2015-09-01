@@ -2,12 +2,7 @@
   (:require [clj-http.client :as http]
             [clj-http.util :as util]
             [clojure.data.json :as json :refer [read-str]]
-            [layzee.adapters.settings :as settings]
-            [layzee.adapters.oauth :as oauth]
-            [layzee.adapters.logging :refer :all]
-            [bone.auth-header :as auth :refer :all]
-            [bone.signature :as signature]
-            [bone.timestamps :as ts]))
+            [layzee.adapters.oauth :as oauth]))
 
 (defn get-tweet[oauth-credential id]
   (let [url "https://api.twitter.com/1.1/statuses/show.json"]

@@ -13,7 +13,7 @@
 
  (fact :wip "It returns nil when tweet doe snot exist"
        (let [result (api/get-tweet settings/oauth-credential "xxx-does-not-exist-xxx")]
-         esult => nil))) ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo
+         result => nil))) ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo
 
 ;; TEST: returns nil when not found
 
