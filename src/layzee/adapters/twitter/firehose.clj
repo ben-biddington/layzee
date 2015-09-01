@@ -46,7 +46,7 @@
       (let [err (:error resp)]
         (if (realized? err)
           (fail "There was an error <%s>" err)
-          (println "Connected and listenting")))
+          (println "Connected and listening")))
 
       (doseq [s (http-async/string resp)]
         (let [status @(:status resp)]

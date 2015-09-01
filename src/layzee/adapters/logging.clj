@@ -7,5 +7,5 @@
        (when settings/log?
          (let [msg (apply format (.replace (str msg) "%" "%%") args)]
            (do
-             (l/info msg)
+             (l/info msg) ;; http://www.bahmanm.com/blogs/how-to-add-logging-to-a-clojure-project
              (println (str "[log] " msg)))))))
