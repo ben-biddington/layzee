@@ -5,37 +5,16 @@
             [layzee.adapters.settings :as settings]
             [layzee.adapters.logging :refer :all]
             [bone.signature-base-string :as signature-base-string]
-            [bone.signature :as signature]))
+            [bone.signature :as signature]
+            [layzee.adapters.twitter.authentication.bearer-tokens :as bearer-tokens]
+            [layzee.net :refer :all]))
 
-;; https://dev.twitter.com/oauth/application-only
 ;; https://github.com/dakrone/clj-http
 ;; https://apps.twitter.com/app/8673064
 
-;; @todo: look up bearer token once (memoize)
-
-(defn- %[what] (util/url-encode (or what "")))
-(defn- %64[what] (util/base64-encode (util/utf8-bytes what)))
-
-(defn- sign[key secret]
-    (%64 (str (% key) ":" (% secret)))) ;; -> https://dev.twitter.com/oauth/application-only
-
-(defn- headers[consumer-key consumer-secret]
-  {
-   "Authorization" (str "Basic " (sign consumer-key consumer-secret))
-   "Content-type" "application/x-www-form-urlencoded;charset=UTF-8"})
-
-(defn- bearer-auth[token]
-  {
+(defn- bearer-auth[token] {
    "Authorization" (str "Bearer " token)
    "Accept"        "application/json"})
-
-(defn- bearer-token-for[key secret]
-  (let [reply (http/post
-               "https://api.twitter.com/oauth2/token"
-               {
-                :headers (headers key secret)
-                :body "grant_type=client_credentials"})]
-    (:access_token (json/read-str (:body reply) :key-fn keyword))))
 
 (defn- search[bearer-token what log opts]
   (log opts)
@@ -47,7 +26,7 @@
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
 (defn lazy-web [oauth-credential & opts]
-  (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
+  (let [token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (search token "#lazyweb" log (if (nil? opts) {} (first opts)))))
 
 (defn- replies-for [bearer-token id]
@@ -56,9 +35,9 @@
         (:statuses (json/read-str (:body reply) :key-fn keyword)))))
 
 (defn replies [oauth-credential tweet-id & opts]
-  (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
+  (let [token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (replies-for token tweet-id)))
 
 (defn by-keyword[oauth-credential keyword & opts]
-  (let [token (bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
+  (let [token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
     (search token keyword log (if (nil? opts) {} (first opts)))))
