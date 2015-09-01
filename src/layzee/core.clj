@@ -3,7 +3,7 @@
   (:refer-clojure :exclude[filter])
   (:require 
    [layzee.adapters.twitter.search :refer :all :as twitter]
-   [layzee.adapters.twitter.firehose :refer :all :as firehose]
+   [layzee.adapters.twitter.stream.filter :refer :all :as filter]
    [layzee.adapters.settings :refer :all :as settings]
    [layzee.use-cases.lazy-web :as lazy-web]
    [layzee.use-cases.realtime-sample :as realtime-sample]))
@@ -12,13 +12,9 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
-(def ^{:private true} realtime-search
-     (fn [opts]
-       (firehose/sample settings/oauth-credential opts)))
-
 (defn- realtime-filter[args]
      (fn [callback]
-       (firehose/filter settings/oauth-credential callback args)))
+       (filter/filter settings/oauth-credential callback args)))
 
 (defn -main [& args]
   (if (< 0 (count args))

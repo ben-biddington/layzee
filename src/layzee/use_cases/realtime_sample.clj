@@ -4,9 +4,9 @@
 (defn- clean[text] (.replace text "\n" ""))
 
 (defn- console[tweet]
-  (let [text (clean (get tweet "text")) created-at (get tweet "created_at")]
+(let [text (clean (get tweet "text")) created-at (get tweet "created_at") screen-name (get-in tweet ["user" "screen_name"])]
     (when (not (nil? text))
-      (println (format "[%s] -- %s" created-at text)))))
+      (println (format "[%s] -- @%s -- %s" created-at screen-name text)))))
 
 (defn- record[tweet]
   (let [text (clean (get tweet "text")) created-at (get tweet "created_at") screen-name (get-in tweet ["user" "screen_name"])]
