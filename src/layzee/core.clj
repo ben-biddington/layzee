@@ -22,5 +22,5 @@
 
 (defn -main [& args]
   (if (< 0 (count args))
-    (realtime-sample/run { :realtime-fn (realtime-filter (rest args)) })
+    (realtime-sample/run { :realtime-fn (realtime-filter (rest args))})
     (lazy-web/run        { :search-adapter-fn lazy-web-search })))
