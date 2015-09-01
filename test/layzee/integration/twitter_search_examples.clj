@@ -11,7 +11,7 @@
        (let [result (api/get-tweet settings/oauth-credential "636438888567824384")]
          (:text result) => "\"Rachel Hunter's Tour of Beauty\" jonkeys_bumbreath#"))
 
- (fact :wip "It returns nil when tweet doe snot exist"
+ (fact "It returns nil when tweet doe snot exist"
        (let [result (api/get-tweet settings/oauth-credential "xxx-does-not-exist-xxx")]
          result => nil))) ;; [!] https://groups.google.com/forum/#!topic/clojure-liberator/Vcsy1Pp_jMo
 
