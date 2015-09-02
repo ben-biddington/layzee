@@ -15,7 +15,7 @@
         (if (= 200 status) (:body reply) ""))))            
             
 (defn to[tweet]
-  (let [url (format "https://twitter.com/%s/status/%s.html" (:screen-name tweet) (:id tweet))]
-    (let [reply (get url)]
+  (let [url (format "https://twitter.com/%s/status/%s.html" (:screen-name tweet) (:id tweet))
+        reply (get url)]
       (filter #(not (= (:id tweet) %))
-        (map #(let [[_ id] %] id) (re-seq #".+-tweet-id=\"(.+)\"" reply))))))
+        (map #(let [[_ id] %] id) (re-seq #".+-tweet-id=\"(.+)\"" reply)))))
