@@ -10,4 +10,4 @@
   (let [url (format "https://twitter.com/%s/status/%s.html" (:screen-name tweet) (:id tweet))]
     (let [reply (:body (http/get url {:headers {"User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"} }))]
       (filter #(not (= (:id tweet) %))
-        (map (fn[match] (let [[_ id] match] id)) (re-seq #".+-tweet-id=\"(.+)\"" reply))))))
+        (map #(let [[_ id] %] id) (re-seq #".+-tweet-id=\"(.+)\"" reply))))))
