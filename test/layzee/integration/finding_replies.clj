@@ -28,4 +28,8 @@
 
  (fact "it returns empty when there *are* no replies" ;; https://twitter.com/benbiddington/status/638277898596540416
        (let [result (replies/to {:id "638277898596540416" :screen-name "iamkey"})]
+         (count result) => 0))
+         
+ (fact "it returns empty when status id is bung"
+       (let [result (replies/to {:id "xxx-this-is-bung-xxx" :screen-name "iamkey"})]
          (count result) => 0)))
