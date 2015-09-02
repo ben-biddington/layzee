@@ -20,5 +20,6 @@
 (facts
  (fact "Can find replies like this"
        (let [result (replies/to {:id "636787150009184256" :screen-name "benbiddington"})]
+         (println result)
          (empty? result) => false
        )))

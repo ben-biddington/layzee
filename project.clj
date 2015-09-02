@@ -18,7 +18,8 @@
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
                                                     com.sun.jmdk/jmxtools
-                                                    com.sun.jmx/jmxri]]]
+                                                    com.sun.jmx/jmxri]]
+                 [enlive "1.1.5"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]
