@@ -33,3 +33,9 @@
  (fact "it returns empty when status id is bung"
        (let [result (replies/to {:id "xxx-this-is-bung-xxx" :screen-name "iamkey"})]
          (count result) => 0)))
+         
+ (facts
+  (fact "And you can find the actual tweets like this"
+    (let [result (replies/to {:id "636840679272873984" :screen-name "iamkey"})]
+        (let [tweets (pmap #(api/get-tweet settings/oauth-credential %) result)]
+          (map #(:text %) tweets) => (contains #{"@iamkey Got latest?" "@benbiddington have just now. Still failing." "@iamkey Config file format has changed &lt;https://t.co/66dquz6N78&gt; (soz)" "@benbiddington chur"})))))
