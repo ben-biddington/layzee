@@ -15,11 +15,17 @@
  
  (fact "Searching for something common returns some results"
        (let [result (search/by-keyword settings/oauth-credential "twitter")]
-         (empty? result) => false)))
+         (empty? result) => false))
 
-(facts
  (fact "Can find replies like this"
        (let [result (replies/to {:id "636787150009184256" :screen-name "benbiddington"})]
-         (println result)
-         (empty? result) => false
-       )))
+         (empty? result) => false))
+
+ (fact "It returns all of the expected replies" ;; https://twitter.com/iamkey/status/636840679272873984
+       (let [expected-count 4 result (replies/to {:id "636840679272873984" :screen-name "iamkey"})]
+         (count result) => expected-count
+         (count (distinct result)) => (count result) "Expected them to all be distinct"))
+
+ (fact "it returns empty when there *are* no replies" ;; https://twitter.com/benbiddington/status/638277898596540416
+       (let [result (replies/to {:id "638277898596540416" :screen-name "iamkey"})]
+         (count result) => 0)))
