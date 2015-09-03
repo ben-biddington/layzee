@@ -24,7 +24,7 @@
  (fact "It returns all of the expected replies" ;; https://twitter.com/iamkey/status/636840679272873984
        (let [expected-count 4 result (replies/to {:id "636840679272873984" :screen-name "iamkey"})]
          (count result) => expected-count
-         (count (distinct result)) => (count result) "Expected them to all be distinct"))
+         (count (distinct result)) => (count result) :notes ["Expected them to all be distinct"]))
 
  (fact "it returns empty when there *are* no replies" ;; https://twitter.com/benbiddington/status/638277898596540416
        (let [result (replies/to {:id "638277898596540416" :screen-name "iamkey"})]
@@ -34,8 +34,13 @@
        (let [result (replies/to {:id "xxx-this-is-bung-xxx" :screen-name "iamkey"})]
          (count result) => 0)))
          
- (facts
-  (fact "And you can find the actual tweets like this"
-    (let [result (replies/to {:id "636840679272873984" :screen-name "iamkey"})]
-        (let [tweets (pmap #(api/get-tweet settings/oauth-credential %) result)]
-          (map #(:text %) tweets) => (contains #{"@iamkey Got latest?" "@benbiddington have just now. Still failing." "@iamkey Config file format has changed &lt;https://t.co/66dquz6N78&gt; (soz)" "@benbiddington chur"})))))
+(facts "Find full replies"
+       (let [result (replies/to {:id "636840679272873984" :screen-name "iamkey"})]
+         (fact "for example"
+               (let [tweets (pmap #(api/get-tweet settings/oauth-credential %) result)]
+                 (map #(:text %) tweets) => (contains #{"@iamkey Got latest?" "@benbiddington have just now. Still failing." "@iamkey Config file format has changed &lt;https://t.co/66dquz6N78&gt; (soz)" "@benbiddington chur"})))
+
+         (future-fact "and each one has the same `in_reply_to_status_id`. Interestingly it FAILS because this is a CONVERSATION -- not replies to the same tweet. So they all have different `in_reply_to_status_id` values."
+             (doseq [tweet tweets]
+                  (:in_reply_to_status_id tweet) => 636840679272873984 :notes ["Expected all of the replies to be tagged as replies to the original"]))))
+
