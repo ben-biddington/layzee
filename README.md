@@ -16,6 +16,14 @@ First install [leiningen](http://leiningen.org/).
 $ lein deps
 ```
 
+# Start the web site
+
+```
+
+$ lein run -m layzee.adapters.web.gui/main
+
+```
+
 # Example: Realtime
 
 You may now monitor `lazyweb` mentions in real time:

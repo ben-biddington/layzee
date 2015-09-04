@@ -19,7 +19,9 @@
                                                     javax.jms/jms
                                                     com.sun.jmdk/jmxtools
                                                     com.sun.jmx/jmxri]]
-                 [enlive "1.1.5"]]
+                 [compojure "1.1.8"]
+                 [ring/ring-jetty-adapter "1.2.2"]
+                 [environ "0.5.0"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]
