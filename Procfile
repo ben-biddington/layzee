@@ -1,1 +1,1 @@
-web: lein run -m layzee.adapters.web.gui/main $PORT
+web: lein run -m layzee.adapters.web.server/main $PORT

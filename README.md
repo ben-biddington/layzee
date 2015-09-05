@@ -16,13 +16,15 @@ First install [leiningen](http://leiningen.org/).
 $ lein deps
 ```
 
-# Start the web site
+# Start the server
 
 ```
 
-$ lein run -m layzee.adapters.web.gui/main
+$ lein run -m layzee.adapters.web.server/main
 
 ```
+
+Which makes the api available at `http://localhost:5000/api`
 
 # Example: Realtime
 

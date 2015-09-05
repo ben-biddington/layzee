@@ -1,4 +1,4 @@
-(ns layzee.adapters.web.gui
+(ns layzee.adapters.web.server
   (:gen-class)
   (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :refer [site]]
@@ -6,7 +6,8 @@
             [clojure.java.io :as io]
             [clojure.data.json :as json]
             [ring.adapter.jetty :as jetty]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [layzee.adapters.web.api :as api]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 
@@ -16,6 +17,7 @@
    :body    "Solace"})
 
 (defroutes app
+  (ANY "/api" request (do (api/reply request)))
   (GET  "/" [] "Conn sucks balls!")
   (route/resources "/")
   (ANY  "*" [] (route/not-found (slurp (io/resource "404.html")))))
