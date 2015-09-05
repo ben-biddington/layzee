@@ -11,6 +11,17 @@
                  :headers content-type-json
                  :body    body})
 
+(defn- err[body] {
+                 :status  500
+                 :headers content-type-json
+                 :body    body})
+
+(defn- xxx[]
+  (try
+   (println settings/oauth-credential)
+   (ok (search/lazy-web settings/oauth-credential))
+   (catch Exception e (err (str "caught exception: " (.getMessage e))))))
+
 (defn reply
   ;; (
   ;;   {
@@ -30,6 +41,5 @@
   ([request]
      (reply request {}))
   ([request opts]
-     (let [result (search/lazy-web settings/oauth-credential)]
-       (ok result))))
+     (xxx)))
 
