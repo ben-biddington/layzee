@@ -1,7 +1,8 @@
 (ns layzee.adapters.web.api
   (:require [clojure.data.json :as json]
-            [layzee.adapters.twitter.search :as search]
-            [layzee.adapters.settings :as settings]))
+            [layzee.adapters.twitter.search :refer :all :as twitter]
+            [layzee.adapters.settings :as settings]
+            [layzee.use-cases.lazy-web :as lazy-web]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
@@ -9,17 +10,20 @@
 (defn- ok[body] {
                  :status  200
                  :headers content-type-json
-                 :body    body})
+                 :body    (json/write-str body)})
 
 (defn- err[body] {
                  :status  500
                  :headers content-type-json
-                 :body    body})
+                 :body    (json/write-str body)})
+
+(def ^{:private true} lazy-web-search
+  (fn [opts]
+    (twitter/lazy-web settings/oauth-credential opts)))
 
 (defn- xxx[]
   (try
-   (println settings/oauth-credential)
-   (ok (search/lazy-web settings/oauth-credential))
+   (ok (:result (lazy-web/run { :search-adapter-fn lazy-web-search })))
    (catch Exception e (err (str "caught exception: " (.getMessage e))))))
 
 (defn reply
