@@ -33,7 +33,10 @@
 (def ^{:private true} no-retweets
      #(nil? (:retweeted_status %1)))
 
-(defn- result[adapters how-many] (apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}]))
+(defn- result[adapters how-many]
+  {
+   :timestamp (t/now)
+   :result (apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}])})
 
 (def ^{:private true} cached-result
   (let [ttl-in-seconds (* 60 5)]
@@ -41,8 +44,9 @@
 
 (defn run[adapters]
   (let [how-many 100]
-    (let [result (apply cached-result [adapters how-many])]
-      (println (format "Searched for <%s> <#lazyweb> mentions and found <%s> results (filtered)" how-many (count result)))
-
-      (doseq [tweet result]
-        (println (view tweet))))))
+    (let [cached (apply cached-result [adapters how-many])]
+      (let [{timestamp :timestamp result :result} cached]
+        (println (format "Searched for <%s> <#lazyweb> mentions and found <%s> results (filtered) -- [at: %s]" how-many (count result) (str timestamp)))
+        
+        (doseq [tweet result]
+          (println (view tweet)))))))
