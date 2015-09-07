@@ -21,7 +21,8 @@
                                                     com.sun.jmx/jmxri]]
                  [compojure "1.1.8"]
                  [ring/ring-jetty-adapter "1.2.2"]
-                 [environ "0.5.0"]]
+                 [environ "0.5.0"]
+                 [org.clojure/core.memoize "0.5.6"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]

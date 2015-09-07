@@ -5,7 +5,8 @@
             [layzee.adapters.settings :refer :all :as settings]
             [clj-http.util :as util]
             [clj-time.core :as t]
-            [clj-time.format :as f]))
+            [clj-time.format :as f]
+            [clojure.core.memoize :as memo]))
 
 (defn- clean[text]
   (.replace text "\n" ""))
@@ -32,10 +33,19 @@
 (def ^{:private true} no-retweets
      #(nil? (:retweeted_status %1)))
 
+(defn- result[adapters how-many]
+  (apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}]))
+
+(defn- cached-result[adapters how-many]
+  ;;(let [ttl-in-seconds 5]
+  ;;  (memo/ttl result :ttl/threshold (* 1000 ttl-in-seconds)))
+  (result adapters how-many)
+  ) ;; http://clojure.github.io/core.memoize/
+
 (defn run[adapters]
   (let [how-many 100]
     
-    (let [result (apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}])]
+    (let [result (memo/snapshot (cached-result adapters how-many))]
 
       (println (format "Searched for <%s> <#lazyweb> mentions and found <%s> results (filtered)" how-many (count result)))
 
