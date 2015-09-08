@@ -6,6 +6,7 @@
             [clojure.java.io :as io]
             [clojure.data.json :as json]
             [ring.adapter.jetty :as jetty]
+            [ring.util.response :as resp]
             [environ.core :refer [env]]
             [layzee.adapters.web.api :as api]))
 
@@ -18,9 +19,8 @@
 
 (defroutes app
   (ANY "/api" request (do (api/reply request)))
-  (GET  "/" [] "Conn sucks balls!")
-  (route/resources "/")
-  (ANY  "*" [] (route/not-found (slurp (io/resource "404.html")))))
+  (GET "/"    [] (resp/resource-response "index.html" {:root "public"}))
+  (ANY  "*"   [] (route/not-found (slurp (io/resource "404.html")))))
 
 (defn main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))]
