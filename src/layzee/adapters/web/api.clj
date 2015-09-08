@@ -7,10 +7,12 @@
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
 
-(defn- ok[body] {
+(defn- ok
+  ([body] (ok content-type-json body))
+  ([headers body] {
                  :status  200
-                 :headers content-type-json
-                 :body    (json/write-str body)})
+                 :headers (merge headers content-type-json)
+                 :body    (json/write-str body)}))
 
 (defn- err[body] {
                  :status  500
@@ -23,7 +25,8 @@
 
 (defn- xxx[]
   (try
-   (ok (:result (lazy-web/run { :search-adapter-fn lazy-web-search })))
+   (let [reply (lazy-web/run { :search-adapter-fn lazy-web-search })]
+     (ok { "X-Timestamp" (str (:timestamp reply))} (:result reply)))
    (catch Exception e (err (str "caught exception: " (.getMessage e))))))
 
 (defn reply
