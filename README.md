@@ -98,3 +98,135 @@ $ LOG=1 lein run
 
 [Looks for firehose mode you have to use normal oauth](https://dev.twitter.com/oauth/overview/authentication-by-api-family) rather than application-only bearer tokens (that the search API supports). We are using [bone](https://github.com/ben-biddington/bone) for oauth signing.
 
+
+# Tools
+
+Get [jq](http://xmodulo.com/how-to-parse-json-string-via-command-line-on-linux.html) and you can do something like:
+
+```
+curl -v https://layzee-web.herokuapp.com/api  | jq '.[0]' >> data.json
+
+```
+
+`data.json` contains:
+
+```
+{
+  "in_reply_to_screen_name": null,
+  "is_quote_status": false,
+  "coordinates": null,
+  "in_reply_to_status_id_str": null,
+  "place": null,
+  "geo": null,
+  "in_reply_to_status_id": null,
+  "entities": {
+    "hashtags": [
+      {
+        "text": "lazyweb",
+        "indices": [
+          61,
+          69
+        ]
+      }
+    ],
+    "symbols": [],
+    "user_mentions": [],
+    "urls": []
+  },
+  "source": "<a href=\"http://itunes.apple.com/us/app/twitter/id409789998?mt=12\" rel=\"nofollow\">Twitter for Mac</a>",
+  "lang": "en",
+  "in_reply_to_user_id_str": null,
+  "id": 641033157383352300,
+  "contributors": null,
+  "truncated": false,
+  "retweeted": false,
+  "in_reply_to_user_id": null,
+  "id_str": "641033157383352320",
+  "favorited": false,
+  "user": {
+    "description": "https://t.co/YHNXd7KnI1",
+    "profile_link_color": "ED145B",
+    "profile_sidebar_border_color": "FFFFFF",
+    "is_translation_enabled": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/630705993488293888/LPSuBILn_normal.png",
+    "profile_use_background_image": true,
+    "default_profile": false,
+    "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/631418763590504448/dfZrGlab.jpg",
+    "is_translator": false,
+    "profile_text_color": "000000",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/6000702/1439207675",
+    "name": "Sara",
+    "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/631418763590504448/dfZrGlab.jpg",
+    "favourites_count": 4505,
+    "screen_name": "pikelet",
+    "entities": {
+      "url": {
+        "urls": [
+          {
+            "url": "http://t.co/ZhYbT8jwYx",
+            "expanded_url": "http://www.pikelet.nz",
+            "display_url": "pikelet.nz",
+            "indices": [
+              0,
+              22
+            ]
+          }
+        ]
+      },
+      "description": {
+        "urls": [
+          {
+            "url": "https://t.co/YHNXd7KnI1",
+            "expanded_url": "https://www.youtube.com/watch?v=frBO8PkEQPA",
+            "display_url": "youtube.com/watch?v=frBO8P…",
+            "indices": [
+              0,
+              23
+            ]
+          }
+        ]
+      }
+    },
+    "listed_count": 41,
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/630705993488293888/LPSuBILn_normal.png",
+    "statuses_count": 33509,
+    "has_extended_profile": true,
+    "contributors_enabled": false,
+    "following": null,
+    "lang": "en",
+    "utc_offset": 43200,
+    "notifications": null,
+    "default_profile_image": false,
+    "profile_background_color": "3C3B3B",
+    "id": 6000702,
+    "follow_request_sent": null,
+    "url": "http://t.co/ZhYbT8jwYx",
+    "time_zone": "Wellington",
+    "profile_sidebar_fill_color": "E0F5FF",
+    "protected": false,
+    "profile_background_tile": false,
+    "id_str": "6000702",
+    "geo_enabled": true,
+    "location": "Auckland, New Zealand",
+    "followers_count": 1108,
+    "friends_count": 1211,
+    "verified": false,
+    "created_at": "Sun May 13 02:42:20 +0000 2007"
+  },
+  "metadata": {
+    "iso_language_code": "en",
+    "result_type": "recent"
+  },
+  "retweet_count": 0,
+  "favorite_count": 0,
+  "created_at": "Mon Sep 07 23:39:49 +0000 2015",
+  "text": "What did the Greens do? ('Greens' is not a good search term) #lazyweb"
+}
+
+```
+
+* First user: `curl -v https://layzee-web.herokuapp.com/api                       | jq '.[0] .user`
+* All tweet messages: `curl -v https://layzee-web.herokuapp.com/api               | jq '.[] .text'`
+* All tweet messages with username: `curl -v https://layzee-web.herokuapp.com/api | jq '[.[] | {tweet: .text, name: .user.screen_name}]'` 
+
+There are [more examples](https://stedolan.github.io/jq/tutorial).
