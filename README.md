@@ -24,7 +24,7 @@ $ lein run -m layzee.adapters.web.server/main
 
 ```
 
-Which makes the api available at `http://localhost:5000/api`
+Which makes the api available at `http://localhost:5000/api` and also at `https://layzee-web.herokuapp.com/api`
 
 # Example: Realtime
 
