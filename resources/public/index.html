@@ -13,7 +13,7 @@
   <script>
     $(document).ready(function() {
       $.get("/api", function( data ) {
-        $(data).each(function(i){ $('#lazy-web').after('<li>' + data[i].text + '</li>'); });   
+        $(data).each(function(i){ $('#lazy-web').after('<li><img width="48" height="48" src=' + data[i].user.profile_image_url + '/><span>@' + data[i].user.screen_name + '</span><a href="https://twitter.com/viktorklang/status/' + data[i].id_str + '">' + data[i].text + '</a></li>'); });   
       });
     });
   </script>
