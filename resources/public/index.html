@@ -2,13 +2,19 @@
   <title></title>
   <head>
     <script src="/js/jquery-2.1.4.min.js"></script>
+    <style type="text/css">
+      body {background-color:red; color:#00ff00; font-family: "Comic sans"}
+    </style>
   </head>
   <body>
-    <table id='lazy-web'></table>
+    <ol id='lazy-web'>
+    </ol>
   </body>
   <script>
     $(document).ready(function() {
-      
+      $.get("/api", function( data ) {
+        $(data).each(function(i){ $('#lazy-web').after('<li>' + data[i].text + '</li>'); });   
+      });
     });
   </script>
 </html>
