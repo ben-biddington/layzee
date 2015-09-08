@@ -20,6 +20,7 @@
 (defroutes app
   (ANY "/api" request (do (api/reply request)))
   (GET "/"    [] (resp/resource-response "index.html" {:root "public"}))
+  (route/resources "/")
   (ANY  "*"   [] (route/not-found (slurp (io/resource "404.html")))))
 
 (defn main [& [port]]
