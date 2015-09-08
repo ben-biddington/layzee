@@ -2,18 +2,57 @@
   <title></title>
   <head>
     <script src="/js/jquery-2.1.4.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
+<link rel="stylesheet" type="text/css" href="https://abs.twimg.com/a/1441217790/css/t1/twitter_core.bundle.css">
+
+<!-- <link href="//cdn.shopify.com/s/files/1/0691/5403/t/82/assets/style.scss.css?16628655097048608558" rel="stylesheet" type="text/css"  media="all"  /> -->
     <style type="text/css">
-      body {background-color:red; color:#00ff00; font-family: "Comic sans"}
+      /*body {background-color:red; color:#00ff00; font-family: "Comic sans"}*/
+      .container {
+    width:700px;
+    margin:0 auto;
+}
+
+.content {
+    line-height:24pt;
+    -moz-border-radius: 6px;
+    border-radius: 6px; /* standards-compliant: (IE) */
+}
+
+.content:nth-of-type(odd) {
+    border: solid 1px #CCC;
+    background: #CCC;
+    -moz-border-radius: 6px;
+    border-radius: 6px; /* standards-compliant: (IE) */
+    padding: 10
+}
+.content:nth-of-type(even) {
+    background: #43494B;
+    -moz-border-radius: 6px;
+    border-radius: 6px; /* standards-compliant: (IE) */
+    padding: 10
+}
+
+
+h3 {
+    line-height:36pt;
+    font-weight:bold;
+    color:blue;
+}
     </style>
   </head>
   <body>
+    <div class="container">
     <ol id='lazy-web'>
     </ol>
+  </div>
   </body>
   <script>
     $(document).ready(function() {
       $.get("/api", function( data ) {
-        $(data).each(function(i){ $('#lazy-web').after('<li><img width="48" height="48" src=' + data[i].user.profile_image_url + '/><span>@' + data[i].user.screen_name + '</span><a href="https://twitter.com/viktorklang/status/' + data[i].id_str + '">' + data[i].text + '</a></li>'); });   
+        $(data).each(function(i){
+          $('#lazy-web').after('<div class="content clearfix"><img class="avatar js-action-profile-avatar" width="48" height="48" src=' + data[i].user.profile_image_url + '/><p class="account-group js-account-group js-action-profile js-user-profile-link js-nav"><a href="#" >@' + data[i].user.screen_name + '</a></p><p class="TweetTextSize TweetTextSize--28px js-tweet-text tweet-text"><a href="https://twitter.com/viktorklang/status/' + data[i].id_str + '">' + data[i].text + '</a></p></div>'); });
       });
     });
   </script>
