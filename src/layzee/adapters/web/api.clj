@@ -24,10 +24,16 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
-;;(replies/to {:id "636840679272873984" :screen-name "iamkey"})
+(defn- replies-for[tweet]
+  (replies/to
+   {:id (-> tweet :id_str) :screen-name (-> tweet :user :screen_name)}))
 
 (defn- search[]
-  (lazy-web/run { :search-adapter-fn lazy-web-search }))
+  (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
+    (let [replies (pmap replies-for (:result results))]
+      (println replies)
+      results
+      )))
 
 (defn- reply-core[]
   (try

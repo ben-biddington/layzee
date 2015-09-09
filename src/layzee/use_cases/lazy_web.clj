@@ -16,8 +16,7 @@
   (let [ttl-in-seconds (* 60 5)]
     (memo/ttl result :ttl/threshold (* 1000 ttl-in-seconds)))) ;; http://clojure.github.io/core.memoize/
 
-(defn run[adapters]
-  (let [how-many 100]
-    (let [result (apply cached-result [adapters how-many]) ui (:ui-adapter-fn adapters)]
-      ;;(when ui (apply ui [how-many result]))
-      result)))
+(defn run
+  ([adapters] (run adapters {:count 100}))
+  ([adapters opts]
+     (apply cached-result [adapters (:count opts)])))

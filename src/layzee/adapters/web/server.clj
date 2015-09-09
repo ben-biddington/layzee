@@ -10,13 +10,6 @@
             [environ.core :refer [env]]
             [layzee.adapters.web.api :as api]))
 
-(def content-type-plain-text {"Content-Type" "text/plain"})
-
-(def ok
-  {:status  200
-   :headers content-type-plain-text
-   :body    "Solace"})
-
 (defroutes app
   (ANY "/api" request (do (api/reply request)))
   (GET "/"    [] (resp/resource-response "index.html" {:root "public"}))
