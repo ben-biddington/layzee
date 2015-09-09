@@ -25,14 +25,13 @@
     (twitter/lazy-web settings/oauth-credential opts)))
 
 (defn- replies-for[tweet]
-  (replies/to
-   {:id (-> tweet :id_str) :screen-name (-> tweet :user :screen_name)}))
+  (assoc tweet (replies/to {:id (-> tweet :id_str) :screen-name (-> tweet :user :screen_name)})))
 
 (defn- search[]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
     (let [replies (pmap replies-for (:result results))]
       (println replies)
-      results
+      
       )))
 
 (defn- reply-core[]

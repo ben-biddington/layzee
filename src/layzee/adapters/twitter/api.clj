@@ -2,6 +2,7 @@
   (:require [clj-http.client :as http]
             [clj-http.util :as util]
             [clojure.data.json :as json :refer [read-str]]
+            [layzee.adapters.oauth :as oauth]
             [layzee.adapters.oauth :as oauth]))
 
 (defn get-tweet[oauth-credential id]
