@@ -24,17 +24,18 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
+;; @todo: move in to use-case
 (defn- assoc-replies-for[oauth-credential tweet]
   (assoc tweet :replies (conversation/for oauth-credential (-> tweet :id_str))))
 
-(defn- search[]
+(defn- search[oauth-credential]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
-    (let [results-with-replies (pmap (partial assoc-replies-for settings/oauth-credential) (:result results))]
+    (let [results-with-replies (pmap (partial assoc-replies-for oauth-credential) (:result results))]
       (assoc results :result results-with-replies))))
 
-(defn- reply-core[]
+(defn- reply-core[oauth-credential]
   (try
-   (let [reply (search)]
+   (let [reply (search oauth-credential)]
      (ok { "X-Timestamp" (str (:timestamp reply))} (:result reply)))
    (catch Exception e (err (str "caught exception: " (.getMessage e))))))
 
@@ -57,5 +58,5 @@
   ([request]
      (reply request {}))
   ([request opts]
-     (reply-core)))
+     (reply-core settings/oauth-credential)))
 

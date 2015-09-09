@@ -228,5 +228,6 @@ curl -v https://layzee-web.herokuapp.com/api  | jq '.[0]' >> data.json
 * First user: `curl -v https://layzee-web.herokuapp.com/api                       | jq '.[0] .user`
 * All tweet messages: `curl -v https://layzee-web.herokuapp.com/api               | jq '.[] .text'`
 * All tweet messages with username: `curl -v https://layzee-web.herokuapp.com/api | jq '[.[] | {tweet: .text, name: .user.screen_name}]'` 
+* All tweet replies: `curl -v https://layzee-web.herokuapp.com/api                | jq '.[] .replies'`
 
 There are [more examples](https://stedolan.github.io/jq/tutorial).
