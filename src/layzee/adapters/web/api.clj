@@ -3,7 +3,7 @@
             [layzee.adapters.twitter.search :refer :all :as twitter]
             [layzee.adapters.settings :as settings]
             [layzee.use-cases.lazy-web :as lazy-web]
-            [layzee.adapters.twitter.replies :as replies]))
+            [layzee.adapters.twitter.conversation :as conversation]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
@@ -24,14 +24,14 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
-(defn- replies-for[tweet]
-  (assoc tweet (replies/to {:id (-> tweet :id_str) :screen-name (-> tweet :user :screen_name)})))
+(defn- assoc-replies-for[oauth-credential tweet]
+  (assoc tweet :replies (conversation/for oauth-credential (-> tweet :id_str))))
 
 (defn- search[]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
-    (let [replies (pmap replies-for (:result results))]
+    (let [results-with-replies (pmap (partial assoc-replies-for settings/oauth-credential) (:result results))]
       (println replies)
-      
+      (assoc results :result results-with-replies)
       )))
 
 (defn- reply-core[]
