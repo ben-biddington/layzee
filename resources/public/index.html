@@ -53,7 +53,7 @@ h3 {
       $.get("/api", function( data ) {
         $(data).each(function(i){
           console.log(data[i].replies.replies);
-          $('#lazy-web').after('<div class="content clearfix"><img class="avatar js-action-profile-avatar" width="48" height="48" src=' + data[i].user.profile_image_url + '/><p class="account-group js-account-group js-action-profile js-user-profile-link js-nav"><a href="#" >@' + data[i].user.screen_name + '</a></p><p class="TweetTextSize TweetTextSize--28px js-tweet-text tweet-text"><a href="https://twitter.com/viktorklang/status/' + data[i].id_str + '">' + data[i].text + '</a></p><span class="metadata">Posted At: '+ data[i].created_at +' </span></div>'); });
+          $('#lazy-web').after('<div class="content clearfix"><img class="avatar js-action-profile-avatar" width="48" height="48" src=' + data[i].user.profile_image_url + '/><p class="account-group js-account-group js-action-profile js-user-profile-link js-nav"><a href="#" >@' + data[i].user.screen_name + '</a></p><p class="TweetTextSize TweetTextSize--28px js-tweet-text tweet-text"><a href="https://twitter.com/viktorklang/status/' + data[i].id_str + '">' + data[i].text + '</a></p><span class="metadata">Posted At: '+ data[i].created_at +' </span><span class="metadata">Replies: ('+ data[i].replies.replies.length + ') </span></div>'); });
       });
     });
   </script>
