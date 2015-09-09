@@ -30,9 +30,7 @@
 (defn- search[]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
     (let [results-with-replies (pmap (partial assoc-replies-for settings/oauth-credential) (:result results))]
-      (println replies)
-      (assoc results :result results-with-replies)
-      )))
+      (assoc results :result results-with-replies))))
 
 (defn- reply-core[]
   (try
