@@ -10,8 +10,10 @@
 
 (facts "Find entire conversations like this" ;; https://dev.twitter.com/rest/public/search; https://dev.twitter.com/rest/reference/get/search/tweets
        (let [result (conversation/for settings/oauth-credential "636840679272873984")]
+         
          (fact "it returns the same tweet"
-               (:id_str result) => "636840679272873984")
+               (:id_str result) => "636840679272873984"
+               (:text result)   => "@benbiddington lolwut?! http://t.co/AC0WvYYfOI")
 
          (fact "and it has the following replies"
                (map #(:text %) (:replies result)) => (contains #{"@iamkey Got latest?" "@benbiddington have just now. Still failing." "@iamkey Config file format has changed &lt;https://t.co/66dquz6N78&gt; (soz)" "@benbiddington chur"})
