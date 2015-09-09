@@ -2,7 +2,8 @@
   (:require [clojure.data.json :as json]
             [layzee.adapters.twitter.search :refer :all :as twitter]
             [layzee.adapters.settings :as settings]
-            [layzee.use-cases.lazy-web :as lazy-web]))
+            [layzee.use-cases.lazy-web :as lazy-web]
+            [layzee.adapters.twitter.replies :as replies]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
@@ -23,9 +24,14 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
-(defn- xxx[]
+;;(replies/to {:id "636840679272873984" :screen-name "iamkey"})
+
+(defn- search[]
+  (lazy-web/run { :search-adapter-fn lazy-web-search }))
+
+(defn- reply-core[]
   (try
-   (let [reply (lazy-web/run { :search-adapter-fn lazy-web-search })]
+   (let [reply (search)]
      (ok { "X-Timestamp" (str (:timestamp reply))} (:result reply)))
    (catch Exception e (err (str "caught exception: " (.getMessage e))))))
 
@@ -48,5 +54,5 @@
   ([request]
      (reply request {}))
   ([request opts]
-     (xxx)))
+     (reply-core)))
 
