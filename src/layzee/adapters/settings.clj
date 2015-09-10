@@ -26,3 +26,9 @@
       (fail "You need to supply the <%s> environment variable, or the <%s> file" name settings-file-name)))
 
 (def log? (env? "LOG"))
+
+(def amazon-credential
+     (let [filename ".amazon"]
+       (if (exists?)
+         (json/read-str (slurp filename) :key-fn keyword)
+         (fail "You need to supply amazon credentials in a file called <%s>" filename)))

@@ -23,7 +23,8 @@
                  [ring/ring-jetty-adapter "1.2.2"]
                  [environ "0.5.0"]
                  [org.clojure/core.memoize "0.5.6"]
-		 [org.clojure/clojurescript "1.7.48"]]
+		 [org.clojure/clojurescript "1.7.48"]
+                 [com.cemerick/rummage "1.0.1"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]
