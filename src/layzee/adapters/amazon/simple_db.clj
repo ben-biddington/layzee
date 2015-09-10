@@ -16,5 +16,5 @@
   (ex amazon-credential #(-> (sdb/get-attrs % domain key) :key)))
 
 (defn create-domain[amazon-credential name]
-  (sdb/create-domain (config-for amazon-credential) name))
+  (ex amazon-credential #(sdb/create-domain % name)))
 
