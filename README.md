@@ -19,8 +19,8 @@ $ lein deps
 # Start the server
 
 ```
-
-$ lein run -m layzee.adapters.web.server/main
+# Compiles the javascript first
+$ cd resources && java -cp cljs.jar:src clojure.main build.clj; cd -; lein run -m layzee.adapters.web.server/main
 
 ```
 
