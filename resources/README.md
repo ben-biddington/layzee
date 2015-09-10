@@ -2,6 +2,14 @@
 
 Based on [the quick start](https://github.com/clojure/clojurescript/wiki/Quick-Start).
 
+Only I had to include cljs like this (in specific order)
+
+```
+    <script type="text/javascript" src="/js/goog/base.js"></script>
+    <script type="text/javascript" src="/js/cljs/core.js"></script>
+    <script type="text/javascript" src="/js/ui/bizz.js"></script>
+```
+
 Download `cljs.jar`:
 
 ```
