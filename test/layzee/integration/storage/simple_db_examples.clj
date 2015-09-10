@@ -10,16 +10,17 @@
 (defn- client-for[amazon-credential] (sdb/create-client (-> amazon-credential :access-key-id) (-> amazon-credential :secret-access-key)))
 (defn- config-for[amazon-credential] (assoc enc/keyword-strings :client (client-for amazon-credential)))
 
+(defn- ex[amazon-credential fn] (apply fn (config-for amazon-credential) []))
+
 (defn- set[amazon-credential domain key value] ;; https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential
-  (let [config (config-for amazon-credential)]
-    (sdb/put-attrs config domain {::sdb/id key :name "value" :key value})))
+  (ex amazon-credential #(sdb/put-attrs % domain {::sdb/id key :name "value" :key value})))
 
 (defn- get[amazon-credential domain key] 
-  (let [config (config-for amazon-credential)]
-    (-> (sdb/get-attrs config domain key) :key)))
+  (ex amazon-credential #(-> (sdb/get-attrs % domain key) :key)))
 
 (facts "Basic proof that we can connect"
        (let [domain "test-layzee-web"]
+
          (sdb/create-domain (config-for settings/amazon-credential) domain)
          
          (fact "can write an entry and read it back"
