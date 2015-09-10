@@ -26,7 +26,12 @@
                (set settings/amazon-credential domain "Have you ever tried to eat a clock?" "It's very time consuming.")
                (get settings/amazon-credential domain "Have you ever tried to eat a clock?") => "It's very time consuming.")
 
-         (future-fact "Getting something that does not exist returns nil")
-         (future-fact "What about when domain does not exist?")
+         (fact "Getting something that does not exist returns nil"
+               (get settings/amazon-credential domain "xxx-does-not-exist-xxx") => nil)
+         
+         (fact "Adding to non-existent domain fails with error"
+               (set settings/amazon-credential "xxx-domain-does-not-exist-xxx" "I used to have a fear of hurdles" "But I got over it") => (throws Exception #"The specified domain does not exist"))
+         
          (future-fact "You can list and delete domains")
+         
          ))
