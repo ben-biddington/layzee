@@ -14,7 +14,6 @@ Download `cljs.jar`:
 
 ```
 wget https://github.com/clojure/clojurescript/releases/download/r1.7.48/cljs.jar -O cljs.jar
-
 ```
 
 build:
