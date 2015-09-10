@@ -8,27 +8,24 @@
 
 (defn- env?[name] (not (nil? (System/getenv name))))
 
-(def ^{:private true} settings-file-name ".twitter")
-(defn exists? [] (.exists (io/as-file settings-file-name)))
+(defn exists? [filename] (.exists (io/as-file filename)))
 
-(defn- from-disk []
-  (when (exists?)
-    (json/read-str (slurp settings-file-name) :key-fn keyword)))
+(defn- from-disk [filename]
+  (when (exists? filename)
+    (json/read-str (slurp filename) :key-fn keyword)))
 
 (defn- env[name] (System/getenv name))
 
-(defn- from-env[] { :consumer-key (env "TWITTER_CONSUMER_KEY")  :consumer-secret (env "TWITTER_CONSUMER_SECRET")} )
+(def log? (env? "LOG"))
 
 (def oauth-credential
      (or
-      (from-disk)
-      (from-env)
-      (fail "You need to supply the <%s> environment variable, or the <%s> file" name settings-file-name)))
-
-(def log? (env? "LOG"))
+      (from-disk ".twitter")
+      { :consumer-key (env "TWITTER_CONSUMER_KEY")  :consumer-secret (env "TWITTER_CONSUMER_SECRET") }
+      (fail "You need to supply the <TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET> environment variables, or the <%s> file." name ".twitter")))
 
 (def amazon-credential
-     (let [filename ".amazon"]
-       (if (exists?)
-         (json/read-str (slurp filename) :key-fn keyword)
-         (fail "You need to supply amazon credentials in a file called <%s>. Find them at <https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential>" filename))))
+     (or
+      (from-disk ".amazon")
+      { :access-key-id (env "AMAZON_ACCESS_KEY_ID")  :secret-acces-key (env "AMAZON_SECRET_ACCESS_KEY") }
+      (fail "You need to either supply the <AMAZON_ACCESS_KEY_ID,AMAZON_SECRET_ACCESS_KEY> environment variables or the <%s> file. Find them at <https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential>" ".amazon")))
