@@ -31,4 +31,4 @@
      (let [filename ".amazon"]
        (if (exists?)
          (json/read-str (slurp filename) :key-fn keyword)
-         (fail "You need to supply amazon credentials in a file called <%s>" filename)))
+         (fail "You need to supply amazon credentials in a file called <%s>. Find them at <https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential>" filename))))
