@@ -12,10 +12,6 @@
 
 First install [leiningen](http://leiningen.org/).
 
-```
-$ lein deps
-```
-
 # Start the server
 
 ```
@@ -24,11 +20,15 @@ $ cd resources && java -cp cljs.jar:src clojure.main build.clj; cd -; lein run -
 
 ```
 
-Which makes the api available at `http://localhost:5000/api`, and the gui at ``http://localhost:5000/api` (and also at `https://layzee-web.herokuapp.com/api`)
+Which makes the api available at `http://localhost:5000/api`, and the gui at ``http://localhost:5000/api`.
+
+In production you can see it at `https://layzee-web.herokuapp.com/api`.
+
+More on the gui [here](https://github.com/ben-biddington/layzee/blob/master/resources/README.md).
 
 # Example: Realtime
 
-You may now monitor `lazyweb` mentions in real time:
+You may now monitor `lazyweb` mentions (or any query) in real time:
 
 ```
 $ lein run realtime clojure tdd hickey flag johnkey
