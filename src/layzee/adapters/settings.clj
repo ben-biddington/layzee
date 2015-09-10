@@ -27,5 +27,5 @@
 (def amazon-credential
      (or
       (from-disk ".amazon")
-      { :access-key-id (env "AMAZON_ACCESS_KEY_ID")  :secret-acces-key (env "AMAZON_SECRET_ACCESS_KEY") }
+      { :access-key-id (env "AMAZON_ACCESS_KEY_ID")  :secret-access-key (env "AMAZON_SECRET_ACCESS_KEY") }
       (fail "You need to either supply the <AMAZON_ACCESS_KEY_ID,AMAZON_SECRET_ACCESS_KEY> environment variables or the <%s> file. Find them at <https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential>" ".amazon")))
