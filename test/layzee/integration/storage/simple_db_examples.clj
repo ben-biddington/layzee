@@ -24,3 +24,12 @@
                (simple-db/list-domains amazon-credential) => (contains domain) )
          
          ))
+
+(facts "About deleting domains"
+       (fact "after deleting they are not listed"
+             (let [name "party-bangers-database"]
+               (simple-db/create-domain amazon-credential name)
+               (simple-db/list-domains amazon-credential) => (contains name)
+               (simple-db/delete-domain amazon-credential name)
+               (simple-db/list-domains amazon-credential) =not=> (contains name)))
+       )

@@ -23,3 +23,6 @@
 (defn list-domains[amazon-credential]
   (as-admin amazon-credential #(sdb/list-domains %)))
 
+(defn delete-domain[amazon-credential name]
+  (as-admin amazon-credential #(sdb/delete-domain % name)))
+
