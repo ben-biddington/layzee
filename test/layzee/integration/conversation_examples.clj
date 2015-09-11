@@ -9,7 +9,7 @@
             [layzee.adapters.logging :refer :all]))
 
 (facts "Find entire conversations like this" ;; https://dev.twitter.com/rest/public/search; https://dev.twitter.com/rest/reference/get/search/tweets
-       (let [result (conversation/for settings/oauth-credential "636840679272873984")]
+       (let [result (conversation/for #(api/get-tweet settings/oauth-credential %) "636840679272873984")]
          
          (fact "it returns the tweet"
                (:id_str result) => "636840679272873984"
