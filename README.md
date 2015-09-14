@@ -18,6 +18,9 @@ First install [leiningen](http://leiningen.org/).
 # Compiles the javascript first
 $ cd resources && java -cp cljs.jar:src clojure.main build.clj; cd -; lein run -m layzee.adapters.web.server/main
 
+# Just start the server
+$ lein run -m layzee.adapters.web.server/main
+
 ```
 
 Which makes the api available at `http://localhost:5000/api`, and the gui at ``http://localhost:5000/api`.

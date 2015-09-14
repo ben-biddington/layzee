@@ -26,13 +26,17 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
-(defn init-database[amazon-credential name] ;; @todo: memoize
-  (simple-db/create-domain amazon-credential name))
+(def ^{:private true} conversation-search
+     #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential) %))
+
+(def ^{:private true} database-name "layzee-web")     
+
+(def init-database (memoize #(simple-db/create-domain settings/amazon-credential database-name)))
 
 ;; @todo: move in to use-case
 (defn- assoc-replies-for[oauth-credential amazon-credential tweet]
-  (apply init-database[amazon-credential "layzee-web"]) 
-  (assoc tweet :replies (conversation/for (nice-api/get-tweet settings/amazon-credential "test-layzee-web" settings/oauth-credential) (-> tweet :id_str))))
+  (apply init-database []) 
+  (assoc tweet :replies (apply conversation-search [(-> tweet :id_str)])))
 
 (defn- search[oauth-credential amazon-credential]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]

@@ -1,16 +1,18 @@
 (ns layzee.use-cases.lazy-web
   (:gen-class)
-  (:require [clojure.test :refer :all]
-            [clojure.core.memoize :as memo]
-            [clj-time.core :as t]))
+  (:require [clojure.core.memoize :as memo]
+            [clj-time.core :as t]
+            [layzee.timing :as timing]))
 
 (def ^{:private true} no-retweets
      #(nil? (:retweeted_status %1)))
 
 (defn- result[adapters how-many]
-  {
-   :timestamp (t/now)
-   :result (apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}])})
+  (let [timed-result (timing/time #(apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}]))]
+    (println (format "It took <%sms> to search" (:duration timed-result)))
+    {
+     :timestamp (t/now)
+     :result (:result timed-result)}))
 
 (def ^{:private true} cached-result
   (let [ttl-in-seconds (* 60 5)]
