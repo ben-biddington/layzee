@@ -32,7 +32,7 @@
 ;; @todo: move in to use-case
 (defn- assoc-replies-for[oauth-credential amazon-credential tweet]
   (apply init-database[amazon-credential "layzee-web"]) 
-  (assoc tweet :replies (apply (nice-api/get-tweet amazon-credential "layzee-web" oauth-credential) [(-> tweet :id_str)])))
+  (assoc tweet :replies (conversation/for (nice-api/get-tweet settings/amazon-credential "test-layzee-web" settings/oauth-credential) (-> tweet :id_str))))
 
 (defn- search[oauth-credential amazon-credential]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
