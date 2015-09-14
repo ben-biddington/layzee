@@ -1,7 +1,8 @@
 (ns layzee.adapters.settings
   (:require [clojure.test :refer :all]
             [clojure.data.json :as json]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [layzee.adapters.twitter.authentication.bearer-tokens :as bearer-tokens]))
 
 (defn- fail[reason & args]
   ((throw (Exception. (apply format reason args)))))
@@ -29,3 +30,6 @@
       (from-disk ".amazon")
       { :access-key-id (env "AMAZON_ACCESS_KEY_ID")  :secret-access-key (env "AMAZON_SECRET_ACCESS_KEY") }
       (fail "You need to either supply the <AMAZON_ACCESS_KEY_ID,AMAZON_SECRET_ACCESS_KEY> environment variables or the <%s> file. Find them at <https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential>" ".amazon")))
+
+(def twitter-bearer-token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential)))
+

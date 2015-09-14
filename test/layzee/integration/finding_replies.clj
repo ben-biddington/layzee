@@ -11,10 +11,10 @@
 (facts ;; https://dev.twitter.com/rest/public/search; https://dev.twitter.com/rest/reference/get/search/tweets
  
  (fact "Though searching by tweet id returns nothing" ;; https://twitter.com/benbiddington/status/636787150009184256
-       (count (search/by-keyword settings/oauth-credential "636787150009184256")) => 0)
+       (count (search/by-keyword settings/twitter-bearer-token "636787150009184256")) => 0)
  
  (fact "Searching for something common returns some results"
-       (let [result (search/by-keyword settings/oauth-credential "twitter")]
+       (let [result (search/by-keyword settings/twitter-bearer-token "twitter")]
          (empty? result) => false))
 
  (fact "Can find replies like this"

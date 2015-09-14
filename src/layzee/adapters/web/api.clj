@@ -24,7 +24,7 @@
 
 (def ^{:private true} lazy-web-search
   (fn [opts]
-    (twitter/lazy-web settings/oauth-credential opts)))
+    (twitter/lazy-web settings/twitter-bearer-token opts)))
 
 (def ^{:private true} conversation-search
      #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential) %))

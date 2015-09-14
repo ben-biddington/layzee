@@ -25,19 +25,7 @@
         (log (:body reply))
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
-(defn lazy-web [oauth-credential & opts]
-  (let [token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
-    (search token "#lazyweb" log (if (nil? opts) {} (first opts)))))
+(defn by-keyword[bearer-token keyword & opts] (search bearer-token keyword log (if (nil? opts) {} (first opts))))
 
-(defn- replies-for [bearer-token id]
-  (let [url (format "https://api.twitter.com/1.1/conversation/show.json?id=%s" id)]
-      (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
-        (:statuses (json/read-str (:body reply) :key-fn keyword)))))
+(defn lazy-web [bearer-token & opts] (by-keyword bearer-token "#lazyweb" opts))
 
-(defn replies [oauth-credential tweet-id & opts]
-  (let [token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
-    (replies-for token tweet-id)))
-
-(defn by-keyword[oauth-credential keyword & opts]
-  (let [token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential))]
-    (search token keyword log (if (nil? opts) {} (first opts)))))
