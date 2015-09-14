@@ -3,7 +3,8 @@
   
   (:require [cemerick.rummage :as sdb]
             [cemerick.rummage.encoding :as enc]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [again.core :as again]))
 
 ;; https://github.com/cemerick/rummage
 (defn- client-for[amazon-credential] (sdb/create-client (-> amazon-credential :access-key-id) (-> amazon-credential :secret-access-key)))
@@ -17,16 +18,14 @@
 (defn decode[text] (json/read-str text :key-fn keyword))
 
 (defn set[amazon-credential domain key value] ;; https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential
-  (try 
-   (ex amazon-credential #(sdb/put-attrs % domain {::sdb/id key :name "value" :key (encode value)}))
-   (catch Exception e)))
+  (again/with-retries [100 1000 10000]
+                      (ex amazon-credential #(sdb/put-attrs % domain {::sdb/id key :name "value" :key (encode value)}))))
 
 (defn get[amazon-credential domain key] 
-  (try 
-   (if-let [result (ex amazon-credential #(-> (sdb/get-attrs % domain key) :key))]
-     (decode result)
-     nil)
-   (catch Exception e nil)))
+   (again/with-retries [100 1000 10000]
+                       (if-let [result (ex amazon-credential #(-> (sdb/get-attrs % domain key) :key))]
+                         (decode result)
+                         nil)))
 
 (defn create-domain[amazon-credential name]
   (ex amazon-credential #(sdb/create-domain % name)))
