@@ -28,27 +28,20 @@
              (simple-db/list-domains amazon-credential) => (contains domain) )
 
        (future-fact "Do we store nil values? Nil keys?")
-       (future-fact "Does setting twice overwrite?")
-       
-       )
+       (future-fact "Does setting twice overwrite?"))
 
 (facts "What certain types look like after round trip"
-       (fact "[!] A hashmap is returned as a set of strings where each string is a name value pair"
+       (fact "A hashmap is returned as a hashmap"
              (simple-db/set amazon-credential domain "a-hashmap-example" {:id_str 636843117526671361, :text "@benbiddington have just now. Still failing.", :favorite_count 0, :user {:screen_name "iamkey"}})
-             (simple-db/get amazon-credential domain "a-hashmap-example") => #{"[:user {:screen_name \"iamkey\"}]" "[:text \"@benbiddington have just now. Still failing.\"]" "[:id_str 636843117526671361]" "[:favorite_count 0]"})
+             (simple-db/get amazon-credential domain "a-hashmap-example") => {:id_str 636843117526671361, :text "@benbiddington have just now. Still failing.", :favorite_count 0, :user {:screen_name "iamkey"}})
 
-       (fact "[!] A vector is returned as a set"
-             (simple-db/set amazon-credential domain "a-vector-example" ["a" "b" "c" "d"])
-             (simple-db/get amazon-credential domain "a-vector-example") => #{"a" "b" "c" "d"})
-       )
-
-(defn- convert[set] (map #( { (first %) (rest %)) set))
-
-(facts "How to convert set of strings to a hashmap"
-       (fact "simple example"
-             (convert #{"[:a :a-value]")} => {:a :a-value})
+       (fact "[!] But a hashmap with string keys is returned with keyword keys"
+             (simple-db/set amazon-credential domain "a-hashmap-example-with-string-keys" {"id_str" 636843117526671361, "text" "@benbiddington have just now. Still failing.", "favorite_count" 0, "user" {:screen_name "iamkey"}})
+             (simple-db/get amazon-credential domain "a-hashmap-example-with-string-keys") => {:id_str 636843117526671361, :text "@benbiddington have just now. Still failing.", :favorite_count 0, :user {:screen_name "iamkey"}})
        
-       )
+       (fact "A vector is returned as a vector"
+             (simple-db/set amazon-credential domain "a-vector-example" ["a" "b" "c" "d"])
+             (simple-db/get amazon-credential domain "a-vector-example") => ["a" "b" "c" "d"]))
 
 (facts "About deleting domains"
        (fact "after deleting they are not listed"
@@ -56,5 +49,4 @@
                (simple-db/create-domain amazon-credential name)
                (simple-db/list-domains amazon-credential) => (contains name)
                (simple-db/delete-domain amazon-credential name)
-               (simple-db/list-domains amazon-credential) =not=> (contains name)))
-       )
+               (simple-db/list-domains amazon-credential) =not=> (contains name))))
