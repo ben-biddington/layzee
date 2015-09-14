@@ -3,7 +3,9 @@
             [layzee.adapters.twitter.search :refer :all :as twitter]
             [layzee.adapters.settings :as settings]
             [layzee.use-cases.lazy-web :as lazy-web]
-            [layzee.adapters.twitter.conversation :as conversation]))
+            [layzee.adapters.twitter.nice-twitter :as nice-api]
+            [layzee.adapters.twitter.conversation :as conversation]
+            [layzee.adapters.amazon.simple-db :as simple-db]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
@@ -24,18 +26,22 @@
   (fn [opts]
     (twitter/lazy-web settings/oauth-credential opts)))
 
-;; @todo: move in to use-case
-(defn- assoc-replies-for[oauth-credential tweet]
-  (assoc tweet :replies (conversation/for oauth-credential (-> tweet :id_str))))
+(defn init-database[amazon-credential name] ;; @todo: memoize
+  (simple-db/create-domain amazon-credential name))
 
-(defn- search[oauth-credential]
+;; @todo: move in to use-case
+(defn- assoc-replies-for[oauth-credential amazon-credential tweet]
+  (apply init-database[amazon-credential "layzee-web"]) 
+  (assoc tweet :replies (apply (nice-api/get-tweet amazon-credential "layzee-web" oauth-credential) [(-> tweet :id_str)])))
+
+(defn- search[oauth-credential amazon-credential]
   (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
-    (let [results-with-replies (pmap (partial assoc-replies-for oauth-credential) (:result results))]
+    (let [results-with-replies (pmap (partial assoc-replies-for oauth-credential amazon-credential) (:result results))]
       (assoc results :result results-with-replies))))
 
-(defn- reply-core[oauth-credential]
+(defn- reply-core[oauth-credential amazon-credential]
   (try
-   (let [reply (search oauth-credential)]
+   (let [reply (search oauth-credential amazon-credential)]
      (ok { "X-Timestamp" (str (:timestamp reply))} (:result reply)))
    (catch Exception e (err (str "caught exception: " (.getMessage e))))))
 
@@ -58,5 +64,5 @@
   ([request]
      (reply request {}))
   ([request opts]
-     (reply-core settings/oauth-credential)))
+     (reply-core settings/oauth-credential settings/amazon-credential)))
 

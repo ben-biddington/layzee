@@ -17,12 +17,16 @@
 (defn decode[text] (json/read-str text :key-fn keyword))
 
 (defn set[amazon-credential domain key value] ;; https://console.aws.amazon.com/iam/home?region=us-west-2#security_credential
-  (ex amazon-credential #(sdb/put-attrs % domain {::sdb/id key :name "value" :key (encode value)})))
+  (try 
+   (ex amazon-credential #(sdb/put-attrs % domain {::sdb/id key :name "value" :key (encode value)}))
+   (catch Exception e)))
 
 (defn get[amazon-credential domain key] 
-  (if-let [result (ex amazon-credential #(-> (sdb/get-attrs % domain key) :key))]
-    (decode result)
-    nil))
+  (try 
+   (if-let [result (ex amazon-credential #(-> (sdb/get-attrs % domain key) :key))]
+     (decode result)
+     nil)
+   (catch Exception e nil)))
 
 (defn create-domain[amazon-credential name]
   (ex amazon-credential #(sdb/create-domain % name)))
