@@ -21,7 +21,7 @@
        (fact "Getting something that does not exist returns nil"
              (simple-db/get amazon-credential domain "xxx-does-not-exist-xxx") => nil)
        
-       (fact "Adding to non-existent domain fails with error"
+       (future-fact "Adding to non-existent domain fails with error"
              (simple-db/set amazon-credential "xxx-domain-does-not-exist-xxx" "I used to have a fear of hurdles" "But I got over it") => (throws Exception #"The specified domain does not exist"))
          
        (fact "You can list domains"
