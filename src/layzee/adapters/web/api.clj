@@ -27,27 +27,32 @@
     (twitter/lazy-web settings/twitter-bearer-token opts)))
 
 (def ^{:private true} conversation-search
-     #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential) %))
+     #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential {:log (fn [msg] (println "[nice-twitter] " msg))}) %))
 
 (def ^{:private true} database-name "layzee-web")     
 
-(def init-database (memoize #(simple-db/create-domain settings/amazon-credential database-name)))
-
-;; @todo: move in to use-case
-(defn- assoc-replies-for[oauth-credential amazon-credential tweet]
-  (apply init-database []) 
-  (assoc tweet :replies (apply conversation-search [(-> tweet :id_str)])))
+(def init-database
+     (memoize
+      (fn []
+        (simple-db/delete-domain settings/amazon-credential database-name)
+        (simple-db/create-domain settings/amazon-credential database-name))))
 
 (defn- search[oauth-credential amazon-credential]
-  (let [results (lazy-web/run { :search-adapter-fn lazy-web-search } {:count 10} )]
-    (let [results-with-replies (pmap (partial assoc-replies-for oauth-credential amazon-credential) (:result results))]
-      (assoc results :result results-with-replies))))
+  ;;(apply init-database [])
+  (lazy-web/run { :search-adapter-fn lazy-web-search :conversation-adapter-fn conversation-search } {:count 10}))
+
+(defn- stack-trace[e]
+  (clojure.string/join "\n" (map (fn[e] (.toString e)) (.getStackTrace e))))
 
 (defn- reply-core[oauth-credential amazon-credential]
   (try
    (let [reply (search oauth-credential amazon-credential)]
      (ok { "X-Timestamp" (str (:timestamp reply))} (:result reply)))
-   (catch Exception e (err (str "caught exception: " (.getMessage e))))))
+   (catch Exception e
+     (binding [*out* *err*]
+       (clojure.stacktrace/print-stack-trace e))
+     
+     (err (str "[layzee.adapters.web.api] An error occured during `reply-core`: " (.getMessage e) (stack-trace e))))))
 
 (defn reply
   ;; (

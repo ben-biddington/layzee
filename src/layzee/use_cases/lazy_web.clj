@@ -7,12 +7,16 @@
 (def ^{:private true} no-retweets
      #(nil? (:retweeted_status %1)))
 
+(defn- assoc-replies-for[conversation-adapter-fn tweet]
+  "Finds all the replies for a single tweet, returning a new tweet with its replies in the :replies field"
+  (assoc tweet (timing/time #(apply conversation-adapter-fn [(:id_str tweet)]) #(println (format "It took <%sms> to fund all of the replies" (:duration %))))))
+
 (defn- result[adapters how-many]
-  (let [timed-result (timing/time #(apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}]))]
-    (println (format "It took <%sms> to search" (:duration timed-result)))
+  (let [result (timing/time #(apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}]) #(println (format "It took <%sms> to search" (:duration %))))]
+    (let [results-with-replies (pmap (partial (:conversation-adapter-fn adapters)) result)]
     {
      :timestamp (t/now)
-     :result (:result timed-result)}))
+     :result results-with-replies})))
 
 (def ^{:private true} cached-result
   (let [ttl-in-seconds (* 60 5)]
