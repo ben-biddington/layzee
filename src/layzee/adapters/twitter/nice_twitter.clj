@@ -20,11 +20,11 @@
   #(or
     (let [log (:log opts)]
       (when-let [cached (db/get amazon-credential simple-db-domain %)]
-        (apply log ["HIT: " %])
+        (apply log [(format "HIT: " %)])
         cached)
       (do
         (let [fresh-value (simplify (api/get-tweet oauth-credential %))]
           (swap! api-hit-count inc)
-          (apply log ["MISS: " fresh-value])
+          (apply log [(format "MISS: " fresh-value)])
           (db/set amazon-credential simple-db-domain % fresh-value) ;; [!] Can only store 1024 bytes
           fresh-value))))))
