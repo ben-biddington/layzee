@@ -14,17 +14,11 @@
 (def ^{:private true} api-hit-count (atom 0))
 
 (defn get-tweet
-  ([amazon-credential simple-db-domain oauth-credential] {:log #(%)})
-  ([amazon-credential simple-db-domain oauth-credential opts]
-  "Returns a tweet lookup function that looks first in db (using `simple-db-domain`) then on twitter. Populates db when required."
-  #(or
-    (let [log (:log opts)]
-      (when-let [cached (db/get amazon-credential simple-db-domain %)]
-        (apply log [(format "HIT: " %)])
-        cached)
-      (do
-        (let [fresh-value (simplify (api/get-tweet oauth-credential %))]
-          (swap! api-hit-count inc)
-          (apply log [(format "MISS: " fresh-value)])
-          (db/set amazon-credential simple-db-domain % fresh-value) ;; [!] Can only store 1024 bytes
-          fresh-value))))))
+  ([amazon-credential simple-db-domain oauth-credential]
+     #(or
+       (when-let [cached (db/get amazon-credential simple-db-domain %)] cached)
+       (do
+         (let [fresh-value (simplify (api/get-tweet oauth-credential %))]
+           (swap! api-hit-count inc)
+           (db/set amazon-credential simple-db-domain % fresh-value) ;; [!] Can only store 1024 bytes
+           fresh-value)))))

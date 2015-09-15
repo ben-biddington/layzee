@@ -9,6 +9,7 @@
 
 (defn- assoc-replies-for[conversation-adapter-fn tweet]
   "Finds all the replies for a single tweet, returning a new tweet with its replies in the :replies field"
+  (println "Finding replies for " (:id_str tweet))
   (assoc tweet (timing/time #(apply conversation-adapter-fn [(:id_str tweet)]) #(println (format "It took <%sms> to fund all of the replies" (:duration %))))))
 
 (defn- result[adapters how-many]

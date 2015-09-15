@@ -3,7 +3,7 @@
             [clj-http.util :as util]
             [clojure.data.json :as json]
             [layzee.adapters.settings :as settings]
-            [layzee.adapters.logging :refer :all]
+            [layzee.adapters.logging :as logging]
             [bone.signature-base-string :as signature-base-string]
             [bone.signature :as signature]
             [layzee.adapters.twitter.authentication.bearer-tokens :as bearer-tokens]
@@ -25,7 +25,9 @@
         (log (:body reply))
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
-(defn by-keyword[bearer-token keyword & opts] (search bearer-token keyword log (if (nil? opts) {} (first opts))))
+(defn by-keyword[bearer-token keyword & opts]
+  (search bearer-token keyword logging/log (if (nil? opts) {} (first opts))))
 
-(defn lazy-web [bearer-token & opts] (by-keyword bearer-token "#lazyweb" opts))
+(defn lazy-web [bearer-token & opts]
+  (by-keyword bearer-token "#lazyweb" opts))
 
