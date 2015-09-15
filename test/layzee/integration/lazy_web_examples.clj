@@ -14,5 +14,5 @@
 (facts "How long does it take roughly?"
        (fact "to, for example, do a lazy web search"
        (let [result (time #(twitter/lazy-web settings/twitter-bearer-token))]
-         (println (:duration result))
+         (:duration result) => (roughly 2000 1000)
          (count (:result result)) => 15)))
