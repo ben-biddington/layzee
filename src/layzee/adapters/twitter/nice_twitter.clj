@@ -4,7 +4,7 @@
             [layzee.adapters.amazon.dynamo-db :as db]))
 
 (defn- simplify[tweet]
-  "A smaller representation"
+  "A smaller representation, since we only need parts of each tweet"
   {
    :id_str         (-> tweet :id_str) 
    :created_at     (-> tweet :created_at)
@@ -20,5 +20,5 @@
        (do
          (let [fresh-value (simplify (api/get-tweet oauth-credential %))]
            (swap! api-hit-count inc)
-           (db/set amazon-credential database-name % fresh-value) ;; [!] Can only store 1024 bytes
+           (db/set amazon-credential database-name % fresh-value)
            fresh-value))))
