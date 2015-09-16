@@ -5,7 +5,7 @@
             [layzee.use-cases.lazy-web :as lazy-web]
             [layzee.adapters.twitter.nice-twitter :as nice-api]
             [layzee.adapters.twitter.conversation :as conversation]
-            [layzee.adapters.amazon.simple-db :as simple-db]))
+            [layzee.adapters.amazon.dynamo-db :as db]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
@@ -27,18 +27,15 @@
     (twitter/lazy-web settings/twitter-bearer-token opts)))
 
 (def ^{:private true} conversation-search
-     #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential {:log (fn [msg] (println "[nice-twitter] " msg))}) %))
+     #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential) (:id_str %)))
 
 (def ^{:private true} database-name "layzee-web")     
 
 (def init-database
-     (memoize
-      (fn []
-        (simple-db/delete-domain settings/amazon-credential database-name)
-        (simple-db/create-domain settings/amazon-credential database-name))))
+     (memoize (fn[] (db/new-table settings/amazon-credential database-name))))
 
 (defn- search[oauth-credential amazon-credential]
-  ;;(apply init-database [])
+  (apply init-database [])
   (lazy-web/run { :search-adapter-fn lazy-web-search :conversation-adapter-fn conversation-search } {:count 10}))
 
 (defn- stack-trace[e]
