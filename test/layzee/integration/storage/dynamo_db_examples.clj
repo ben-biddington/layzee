@@ -37,13 +37,27 @@
   (doseq [name (list-tables amazon-credential)]
     (delete-table amazon-credential name)))
 
+(defn save[amazon-credential table-name item]
+  (far/put-item (client-opts amazon-credential) (symbol table-name) item))
+
 (def test-table-name "lazy-web-test")
 
 (facts "The basics"
        ;;(delete-all-tables settings/amazon-credential)
        
        (future-fact "It fails with error when table already exists")
-       (fact "like this"
+
+       (fact "create a new table like this"
              (delete-table settings/amazon-credential test-table-name)
              (new-table settings/amazon-credential test-table-name)
              (list-tables settings/amazon-credential) => '(:lazy-web-test)))
+
+(facts "Can add items to a table"
+       (new-table settings/amazon-credential test-table-name)
+
+       (future-fact "You can only add maps -- NOT strings for example")
+       
+       (fact "for example"
+             (save settings/amazon-credential test-table-name
+                   {:id 0 
+                    :name "Bang" :data (far/freeze {:id_str "abc" :text "The tweet text"} )})))
