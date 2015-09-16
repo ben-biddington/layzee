@@ -16,10 +16,9 @@
 
 (defn get-tweet [amazon-credential database-name oauth-credential]
      #(or
-       (when-let [cached (db/get amazon-credential database-name %)] (println "HIT") cached)
+       (when-let [cached (db/get amazon-credential database-name %)] cached)
        (do
          (let [fresh-value (simplify (api/get-tweet oauth-credential %))]
            (swap! api-hit-count inc)
-           (println "MISS")
            (db/set amazon-credential database-name % fresh-value) ;; [!] Can only store 1024 bytes
            fresh-value))))
