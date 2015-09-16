@@ -25,7 +25,8 @@
                  [org.clojure/core.memoize "0.5.6"]
 		 [org.clojure/clojurescript "1.7.48"]
                  [com.cemerick/rummage "1.0.1"]
-                 [listora/again "0.1.0"]]
+                 [listora/again "0.1.0"]
+                 [com.taoensso/faraday "1.7.1"]]
   :main ^:skip-aot layzee.core
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[midje "1.7.0" :exclusions [org.clojure/clojure]]]
