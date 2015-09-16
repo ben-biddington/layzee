@@ -26,10 +26,10 @@
   (fn [opts]
     (twitter/lazy-web settings/twitter-bearer-token opts)))
 
-(def ^{:private true} conversation-search
-     #(conversation/for (nice-api/get-tweet settings/amazon-credential settings/dynamo-db-tweet-table-name settings/oauth-credential) (:id_str %)))
+(def ^{:private true} database-name settings/dynamo-db-tweet-table-name)
 
-(def ^{:private true} database-name "layzee-web")     
+(def ^{:private true} conversation-search
+     #(conversation/for (nice-api/get-tweet settings/amazon-credential database-name settings/oauth-credential) (:id_str %)))
 
 (def init-database
      (memoize (fn[] (db/new-table settings/amazon-credential database-name))))
