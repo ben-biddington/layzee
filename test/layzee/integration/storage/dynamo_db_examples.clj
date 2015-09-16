@@ -10,7 +10,13 @@
 (facts "Can add items to a table"
        (dynamo-db/new-table settings/amazon-credential test-table-name)
        
-       (future-fact "You can only add maps -- NOT strings for example")
+       (fact "You can add items of any type"
+             (dynamo-db/set settings/amazon-credential test-table-name "1" "value for id 1")
+             (dynamo-db/get settings/amazon-credential test-table-name "1") => "value for id 1")
+
+       (fact "You can even store nil"
+             (dynamo-db/set settings/amazon-credential test-table-name "1" nil)
+             (dynamo-db/get settings/amazon-credential test-table-name "1") => nil)
        
        (fact "for example"
              (dynamo-db/set settings/amazon-credential test-table-name "1" {:text "The tweet goes here"})
