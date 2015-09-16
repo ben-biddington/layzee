@@ -4,7 +4,7 @@
             [layzee.adapters.amazon.dynamo-db :as db]))
 
 (defn- simplify[tweet]
-  "A smaller representation that will fit in SimpleDB (1024 B limit)"
+  "A smaller representation"
   {
    :id_str         (-> tweet :id_str) 
    :created_at     (-> tweet :created_at)
@@ -14,12 +14,12 @@
 
 (def ^{:private true} api-hit-count (atom 0))
 
-(defn get-tweet [amazon-credential simple-db-domain oauth-credential]
+(defn get-tweet [amazon-credential database-name oauth-credential]
      #(or
-       (when-let [cached (db/get amazon-credential simple-db-domain %)] (println "HIT") cached)
+       (when-let [cached (db/get amazon-credential database-name %)] (println "HIT") cached)
        (do
          (let [fresh-value (simplify (api/get-tweet oauth-credential %))]
            (swap! api-hit-count inc)
            (println "MISS")
-           (db/set amazon-credential simple-db-domain % fresh-value) ;; [!] Can only store 1024 bytes
+           (db/set amazon-credential database-name % fresh-value) ;; [!] Can only store 1024 bytes
            fresh-value))))
