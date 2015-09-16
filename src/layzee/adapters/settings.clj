@@ -33,3 +33,4 @@
 
 (def twitter-bearer-token (bearer-tokens/bearer-token-for (:consumer-key oauth-credential) (:consumer-secret oauth-credential)))
 
+(def dynamo-db-tweet-table-name (or (env "TWEET_TABLE_NAME") "layzee-web"))

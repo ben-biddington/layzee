@@ -27,7 +27,7 @@
     (twitter/lazy-web settings/twitter-bearer-token opts)))
 
 (def ^{:private true} conversation-search
-     #(conversation/for (nice-api/get-tweet settings/amazon-credential "layzee-web" settings/oauth-credential) (:id_str %)))
+     #(conversation/for (nice-api/get-tweet settings/amazon-credential settings/dynamo-db-tweet-table-name settings/oauth-credential) (:id_str %)))
 
 (def ^{:private true} database-name "layzee-web")     
 
