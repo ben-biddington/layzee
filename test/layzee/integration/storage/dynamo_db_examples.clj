@@ -24,10 +24,8 @@
 
 (defn new-table[amazon-credential name]
   (far/ensure-table (client-opts amazon-credential) name
-                    [:id :n]  ; Primary key named "id", (:n => number type)
-                    {:throughput {:read 1 :write 1} ; Read & write capacity (units/sec)
-                     :block? true ; Block thread during table creation
-   }))
+                    [:id :s] 
+                    {:throughput {:read 1 :write 1} :block? true }))
 
 (defn delete-table[amazon-credential name]
   (when (table-exists? amazon-credential name)
@@ -37,27 +35,19 @@
   (doseq [name (list-tables amazon-credential)]
     (delete-table amazon-credential name)))
 
-(defn save[amazon-credential table-name item]
-  (far/put-item (client-opts amazon-credential) (symbol table-name) item))
+(defn set[amazon-credential table-name name value]
+  (far/put-item (client-opts amazon-credential) (symbol table-name) { :id name :data (far/freeze value)} ))
+
+(defn get[amazon-credential table-name name]
+  (:data (far/get-item (client-opts amazon-credential) (symbol table-name) { :id name } { :attrs [:data] :consistent? true} )))
 
 (def test-table-name "lazy-web-test")
 
-(facts "The basics"
-       ;;(delete-all-tables settings/amazon-credential)
-       
-       (future-fact "It fails with error when table already exists")
-
-       (fact "create a new table like this"
-             (delete-table settings/amazon-credential test-table-name)
-             (new-table settings/amazon-credential test-table-name)
-             (list-tables settings/amazon-credential) => '(:lazy-web-test)))
-
 (facts "Can add items to a table"
        (new-table settings/amazon-credential test-table-name)
-
+       
        (future-fact "You can only add maps -- NOT strings for example")
        
        (fact "for example"
-             (save settings/amazon-credential test-table-name
-                   {:id 0 
-                    :name "Bang" :data (far/freeze {:id_str "abc" :text "The tweet text"} )})))
+             (set settings/amazon-credential test-table-name "1" {:text "The tweet goes here"})
+             (get settings/amazon-credential test-table-name "1") => {:text "The tweet goes here"}))
