@@ -9,13 +9,14 @@
             [environ.core :refer [env]]
             [layzee.adapters.web.api :as api]
             [layzee.adapters.log :as log]
-            [layzee.timing]))
+            [layzee.timing :as timing]))
 
 (defroutes app
-  (ANY "/api" request (do (api/reply request)))
+  (ANY "/api" request (timing/time #(api/reply request) #(log/info "It took <%sms> to reply to <%s>" (:duration %) request)))
   (GET "/"    [] (resp/resource-response "index.html" {:root "public"}))
   (route/resources "/")
   (ANY  "*"   [] (route/not-found (slurp (io/resource "404.html")))))
+  
 
 (defn- log[msg] (log/info msg))
 
