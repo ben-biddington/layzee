@@ -4,17 +4,20 @@
             [compojure.handler :refer [site]]
             [compojure.route :as route]
             [clojure.java.io :as io]
-            [clojure.data.json :as json]
             [ring.adapter.jetty :as jetty]
             [ring.util.response :as resp]
             [environ.core :refer [env]]
-            [layzee.adapters.web.api :as api]))
+            [layzee.adapters.web.api :as api]
+            [layzee.adapters.log :as log]
+            [layzee.timing]))
 
 (defroutes app
   (ANY "/api" request (do (api/reply request)))
   (GET "/"    [] (resp/resource-response "index.html" {:root "public"}))
   (route/resources "/")
   (ANY  "*"   [] (route/not-found (slurp (io/resource "404.html")))))
+
+(defn- log[msg] (log/info msg))
 
 (defn main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))]
