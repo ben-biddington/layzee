@@ -39,7 +39,7 @@
 (defn- search[oauth-credential amazon-credential]
   (apply init-database [])
   (timing/time
-   #(lazy-web/run { :search-adapter-fn lazy-web-search :conversation-adapter-fn conversation-search :log-fn log/info } {:count 10})
+   #(lazy-web/run { :search-adapter-fn lazy-web-search :conversation-adapter-fn conversation-search :log-fn log/info } {:count 15})
    #(log/info "It took <%sms> to run the use case" (:duration %))))
 
 (defn- stack-trace[e]
