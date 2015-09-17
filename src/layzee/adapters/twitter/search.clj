@@ -26,8 +26,11 @@
         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
 
 (defn by-keyword[bearer-token keyword & opts]
+  (logging/log opts)
   (search bearer-token keyword logging/log (if (nil? opts) {} (first opts))))
 
-(defn lazy-web [bearer-token & opts]
-  (by-keyword bearer-token "#lazyweb" opts))
+(defn lazy-web
+  ([bearer-token] (lazy-web bearer-token {}))
+  ([bearer-token opts]
+     (by-keyword bearer-token "#lazyweb" opts)))
 
