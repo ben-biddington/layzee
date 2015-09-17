@@ -7,12 +7,12 @@
 (def ^{:private true} no-retweets
      #(nil? (:retweeted_status %1)))
 
-(defn- result[adapters how-many]
-  (let [result (timing/time #(apply (:search-adapter-fn adapters) [{:count how-many :filter no-retweets}]) #(println (format "It took <%sms> to search" (:duration %))))]
-    (let [results-with-replies (pmap (partial (:conversation-adapter-fn adapters)) result)]
-    {
-     :timestamp (t/now)
-     :result results-with-replies})))
+(defn- result[search-fn conversation-fn log-fn how-many]
+  (let [result (timing/time #(apply search-fn [{:count how-many :filter no-retweets}]) #(log-fn "It took <%sms> to search"       (:duration %)))]
+    (let [results-with-replies (timing/time #(pmap (partial conversation-fn) result)   #(log-fn "It took <%sms> to find replies" (:duration %)))]
+      {
+       :timestamp (t/now)
+       :result results-with-replies})))
 
 (def ^{:private true} cached-result
   (let [ttl-in-seconds (* 60 5)]
@@ -21,4 +21,4 @@
 (defn run
   ([adapters] (run adapters {:count 100}))
   ([adapters opts]
-     (apply cached-result [adapters (:count opts)])))
+     (apply cached-result [(:search-adapter-fn adapters) (:conversation-adapter-fn adapters) (:log-fn adapters) (:count opts)])))
