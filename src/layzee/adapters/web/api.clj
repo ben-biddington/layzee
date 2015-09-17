@@ -6,7 +6,8 @@
             [layzee.adapters.twitter.nice-twitter :as nice-api]
             [layzee.adapters.twitter.conversation :as conversation]
             [layzee.adapters.amazon.dynamo-db :as db]
-            [layzee.adapters.log :as log]))
+            [layzee.adapters.log :as log]
+            [layzee.timing :as timing]))
 
 (def content-type-plain-text {"Content-Type" "text/plain"})
 (def content-type-json {"Content-Type" "application/json"})
@@ -37,7 +38,9 @@
 
 (defn- search[oauth-credential amazon-credential]
   (apply init-database [])
-  (lazy-web/run { :search-adapter-fn lazy-web-search :conversation-adapter-fn conversation-search :log-fn log/info } {:count 10}))
+  (timing/time
+   #(lazy-web/run { :search-adapter-fn lazy-web-search :conversation-adapter-fn conversation-search :log-fn log/info } {:count 10})
+   #(log/info "It took <%sms> to run the use case" (:duration %))))
 
 (defn- stack-trace[e]
   (clojure.string/join "\n" (map (fn[e] (.toString e)) (.getStackTrace e))))
