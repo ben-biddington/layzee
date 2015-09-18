@@ -8,7 +8,7 @@
      #(nil? (:retweeted_status %1)))
 
 (defn- result[search-fn conversation-fn log-fn how-many]
-  (let [result (timing/time #(apply search-fn [{:count how-many :filter no-retweets}])       #(log-fn "It took <%sms> to search. Found <%s> tweets."  (:duration %) (count result)))]
+  (let [result (timing/time #(apply search-fn [{:count how-many :filter no-retweets}])       #(log-fn "It took <%sms> to search."  (:duration %)))]
     (let [results-with-replies (timing/time #(doall (pmap (partial conversation-fn) result)) #(log-fn "It took <%sms> to find replies to <%s> tweets" (:duration %) (count result)))]
       {
        :timestamp (t/now)
