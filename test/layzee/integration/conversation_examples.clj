@@ -3,6 +3,7 @@
   (:require [clojure.test :refer :all]
             [clojure.data.json :as json :refer [write-str]]
             [layzee.adapters.settings :refer :all :as settings]
+            [layzee.timing :as timing]
             [layzee.adapters.twitter.api :as api]
             [layzee.adapters.twitter.nice-twitter :as nice-api]
             [layzee.adapters.twitter.search :as search]
@@ -21,6 +22,12 @@
                (map #(:text %) (:replies result)) => (contains #{"@iamkey Got latest?" "@benbiddington have just now. Still failing." "@iamkey Config file format has changed &lt;https://t.co/66dquz6N78&gt; (soz)" "@benbiddington chur"})
          
                )))
+
+(facts :wip "How does it perform?"
+       (fact "for example"
+             (timing/time
+              (fn[] (conversation/for #(api/get-tweet settings/oauth-credential %) "636840679272873984"))
+              #(println (format "It took <%sms> to find replies" (:duration %))))))
 
 (facts "Find conversations from either cache or api"
        (db/new-table settings/amazon-credential "test-layzee-web")
