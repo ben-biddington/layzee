@@ -16,6 +16,8 @@
    "Authorization" (str "Bearer " token)
    "Accept"        "application/json"})
 
+(defn- search-since[bearer-token what log opts])
+
 (defn- search[bearer-token what log opts]
   (log opts)
   (let [how-many (or (:count opts) 15) tweet-filter (or (:filter opts) (fn[what] what))]
