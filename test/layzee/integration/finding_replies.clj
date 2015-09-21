@@ -44,3 +44,18 @@
              (doseq [tweet tweets]
                   (:in_reply_to_status_id tweet) => 636840679272873984 :notes ["Expected all of the replies to be tagged as replies to the original"]))))
 
+(defn replies-to[tweet] ;; also consider using the date it was posted so we can search "newer-than"
+  (let [search-result (search/by-keyword settings/twitter-bearer-token (format "@%s" (:screen_name tweet)) {:count 1000}) id (:id_str tweet)]
+    (println (map #(format "id: %s, in_reply_to: %s, %s\n" (:id_str %) (:in_reply_to_status_id_str %) (:text %) (:text %)) search-result))
+    (println (count search-result))
+    (filter #(= id (:in_reply_to_status_id_str %)) search-result)))
+
+(facts :next "As an alternative to the (slow) page scrapes, we could instead do this" ;; https://www.quora.com/How-can-I-get-a-list-of-replies-to-a-specific-tweet-via-Twitter-API
+       ;; Find tweets referenceing the author by searching for them
+       ;; Find any that are in reply to that tweet
+       ;; Note that we will have to page through the results <https://dev.twitter.com/rest/public/timelines>, since at the moment we get single page
+       (let [result (replies-to { :id_str "636840679272873984" :screen_name "iamkey" })]
+         (println result)
+         
+         )
+       )
