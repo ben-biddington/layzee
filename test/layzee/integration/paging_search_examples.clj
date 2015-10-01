@@ -10,9 +10,9 @@
             [layzee.adapters.logging :refer :all]))
 
 (facts "How to collect search results in pages"
-       (future-fact "for example, searching for mentions in small pages"
-             (let [search-results (search/by-keyword settings/twitter-bearer-token "@iamkey" {:limit 3 :page-size 1})]
-               (count search-results) => 20)))
+       (fact "for example, searching for mentions in small pages"
+             (let [search-results (search/by-keyword-paged settings/twitter-bearer-token "@iamkey" {:limit 3 :page-size 1})]
+               (count search-results) => 3)))
 
 (facts "How to page arbitrary sequences"
        (fact "for example, collect 20 results 5 at a time"
