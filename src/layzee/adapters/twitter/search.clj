@@ -20,31 +20,39 @@
 (defn- search-since[bearer-token what log opts])
 
 (defn- search [bearer-token what log opts]
-  "opts[:count] -- The number of results to return"
+  "opts[:count]  -- The number of results to return
+   opts[:max-id] -- The id of the newst tweet we have already received
+   opts[:filter] -- The filter to apply to the results before returning. For example, you may wish to omit retweets.
+
+   <https://dev.twitter.com/rest/public/timelines> Note that since the max_id parameter is inclusive, the Tweet with the matching ID will actually be returned again."
   (log opts)
-  (let [page-size (or (:count opts) 15) tweet-filter (or (:filter opts) (fn[what] what)) max-id (or (:max-id opts) 0)]
-    (let [url (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s&max-id=%s" page-size (% what) (% (str max-id)))]
+  (let [how-many (or (:count opts) 15) tweet-filter (or (:filter opts) (fn[what] what)) max-id (or (:max-id opts) 0)]
+    (let [url (format "https://api.twitter.com/1.1/search/tweets.json?count=%s&q=%s&max_id=%s" how-many (% what) (% (str max-id)))]
       (log url)
       (let [reply (http/get url {:headers (bearer-auth bearer-token)})]
+        (println url)
         (log (:body reply))
-        (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword)))))))
+        (remove #(= max-id (:id %))
+         (filter tweet-filter (:statuses (json/read-str (:body reply) :key-fn keyword))))))))
 
 (defn by-keyword[bearer-token keyword & opts]
   (logging/log opts)
   (search bearer-token keyword logging/log (if (nil? opts) {} (first opts))))
 
-
-(defn- max-id[list]
-  
-  )
+(defn- oldest-id[list]
+  "https://dev.twitter.com/rest/public/timelines"
+  (if (empty? list)
+    0
+    (apply min (map #(:id %) list))))
 
 (defn by-keyword-paged[bearer-token keyword opts]
-  "The idea here is to apply paging so that we can return all keyword search results"
-  (let [limit (or (:limit opts) 15) page-size (or (:page-size opts) 100)]
+  (let [limit (or (:limit opts) 15) page-size (or (:page-size opts) 100) log (or (:log opts) logging/log)]
     (paging/page
-     #(search bearer-token keyword logging/log {:count limit :page-size page-size})
+     (partial search bearer-token keyword log)
+     (fn [result args] (merge args {:max-id (oldest-id result)}))
      #(<= limit (count %))
-     '())))
+     '()
+     {:count page-size})))
 
 (defn lazy-web
   ([bearer-token] (lazy-web bearer-token {}))
