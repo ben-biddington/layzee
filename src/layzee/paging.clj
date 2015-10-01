@@ -9,8 +9,10 @@
    :fn-stop     -- how we tell we're finished
    :result      -- collects the results
    :args        -- [optional] arguments for :fn-producer. Defaults to nil (, and :fn-producer is invoked with zero arity)."
+
   ([fn-producer fn-stop result]
      (page fn-producer default-fn-args fn-stop result nil))
+
   ([fn-producer fn-args fn-stop result args]
      (if (apply fn-stop [result])
        result
