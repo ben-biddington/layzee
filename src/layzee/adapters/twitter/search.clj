@@ -30,7 +30,6 @@
 
    <https://dev.twitter.com/rest/public/timelines> Note that since the max_id parameter is inclusive, the Tweet with the matching ID will actually be returned again."
   (log opts)
-  (println opts)
   (let [max-id (or (:max-id opts) 0) tweet-filter (or (:filter opts) (fn[what] what))]
     (let [url (earl what opts)]
       (log url)
