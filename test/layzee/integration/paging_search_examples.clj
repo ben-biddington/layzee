@@ -9,20 +9,17 @@
             [layzee.adapters.twitter.replies :as replies]
             [layzee.adapters.logging :refer :all]))
 
+;;
+;; "Keep in mind that the search index has a 7-day limit." -- https://dev.twitter.com/rest/reference/get/search/tweets
+;;
+
 (facts "How to collect search results in pages (provided page-size > 1)"
        (let [search-results (search/by-keyword-paged settings/twitter-bearer-token "@iamkey" {:limit 5 :page-size 2})]
          (fact "it returns the requested count"
-               (count search-results) => 5)
+               (count search-results) => 5);
 
          (fact "it returns no duplicates"
                (count (distinct (map #(:id %) search-results))) => 5)))
-
-(facts "Quirks"
-       (fact "because max_id returns tweets with id <= whatever value you supply (https://dev.twitter.com/rest/public/timelines), when you use age size 1 you always get the same one back"
-             (let [search-results (search/by-keyword-paged settings/twitter-bearer-token "@iamkey" {:limit 3 :page-size 1})]
-               (println (map #(:id %) search-results))
-               (count search-results) => 3
-               (count (distinct (map #(:id %) search-results))) => 1)))
 
 (facts "How to page arbitrary sequences"
        (fact "for example, collect 20 results 5 at a time"

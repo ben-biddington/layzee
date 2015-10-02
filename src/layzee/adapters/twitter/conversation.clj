@@ -11,6 +11,7 @@
 (defn- assoc-replies-to[fn-to-get-a-tweet tweet]
   (assoc tweet :replies (or (full-replies-for fn-to-get-a-tweet tweet) [])))
 
+;; @todo: you may like <https://dev.twitter.com/rest/reference/get/statuses/lookup>
 (defn for[fn-to-get-a-tweet id]
   (let [tweet (apply fn-to-get-a-tweet [id])]
     (assoc-replies-to fn-to-get-a-tweet tweet)))

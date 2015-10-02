@@ -17,4 +17,6 @@
      (if (apply fn-stop [result])
        result
        (let [next-result (produce fn-producer args)]
-         (recur fn-producer fn-args fn-stop (concat next-result result) (apply fn-args [next-result args]))))))
+         (if (empty? next-result)
+           result
+           (recur fn-producer fn-args fn-stop (concat next-result result) (apply fn-args [next-result args])))))))
