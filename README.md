@@ -192,7 +192,7 @@ curl -v https://layzee-web.herokuapp.com/api  | jq '.[0]' >> data.json
     },
     "listed_count": 41,
     "profile_image_url_https": "https://pbs.twimg.com/profile_images/630705993488293888/LPSuBILn_normal.png",
-    "statuses_count": 33509,
+    "statuses_count": 1337,
     "has_extended_profile": true,
     "contributors_enabled": false,
     "following": null,
